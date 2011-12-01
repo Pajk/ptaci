@@ -19,9 +19,9 @@
         
         CGSize winSize = [CCDirector sharedDirector].winSize;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            _statusLabel = [CCLabelBMFont labelWithString:@"" fntFile:@"Arial-hd.fnt"];
+			_statusLabel = [CCLabelTTF labelWithString:@"" fontName:@"Arial" fontSize:12.0];
         } else {
-            _statusLabel = [CCLabelBMFont labelWithString:@"" fntFile:@"Arial.fnt"];
+            _statusLabel = [CCLabelTTF labelWithString:@"" fontName:@"Arial" fontSize:12.0];
         }
         _statusLabel.position = ccp(winSize.width* 0.85, winSize.height * 0.9);
         [self addChild:_statusLabel];        
@@ -52,21 +52,21 @@
         message = @"You lose!";
     }
     
-    CCLabelBMFont *label;
+    CCLabelTTF *label;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        label = [CCLabelBMFont labelWithString:message fntFile:@"Arial-hd.fnt"];
+        label = [CCLabelTTF labelWithString:message fontName:@"Arial" fontSize:12.0];
     } else {
-        label = [CCLabelBMFont labelWithString:message fntFile:@"Arial.fnt"];
+        label = [CCLabelTTF labelWithString:message fontName:@"Arial" fontSize:12.0];
     }
     label.scale = 0.1;
     label.position = ccp(winSize.width/2, winSize.height * 0.6);
     [self addChild:label];
     
-    CCLabelBMFont *restartLabel;
+    CCLabelTTF *restartLabel;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        restartLabel = [CCLabelBMFont labelWithString:@"Restart" fntFile:@"Arial-hd.fnt"];    
+        restartLabel = [CCLabelTTF labelWithString:message fontName:@"Arial" fontSize:12.0];    
     } else {
-        restartLabel = [CCLabelBMFont labelWithString:@"Restart" fntFile:@"Arial.fnt"];    
+        restartLabel = [CCLabelTTF labelWithString:message fontName:@"Arial" fontSize:12.0];  
     }
     
     CCMenuItemLabel *restartItem = [CCMenuItemLabel itemWithLabel:restartLabel target:self selector:@selector(restartTapped:)];

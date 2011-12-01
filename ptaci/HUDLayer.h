@@ -9,7 +9,7 @@
 #import "cocos2d.h"
 
 @interface HUDLayer : CCLayer {
-    CCLabelBMFont * _statusLabel;
+    CCLabelTTF * _statusLabel;
 }
 
 - (void)showRestartMenu:(BOOL)won;
