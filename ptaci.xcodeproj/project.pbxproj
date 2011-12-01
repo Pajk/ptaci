@@ -123,6 +123,19 @@
 		2EE185E8148756AC007DD779 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE185E7148756AC007DD779 /* RootViewController.m */; };
 		2EE185EB148756AC007DD779 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE185EA148756AC007DD779 /* GameScene.m */; };
 		2EE185FB14876BF9007DD779 /* Bird.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE185FA14876BF9007DD779 /* Bird.m */; };
+		2EE1860214877C30007DD779 /* bear.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1860014877C30007DD779 /* bear.plist */; };
+		2EE1860314877C30007DD779 /* bear.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1860114877C30007DD779 /* bear.png */; };
+		2EE1860E14878A6E007DD779 /* HUDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1860D14878A6D007DD779 /* HUDLayer.mm */; };
+		2EE1861514878B15007DD779 /* ActionLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1861414878B14007DD779 /* ActionLayer.m */; };
+		2EE1861F14879083007DD779 /* Arial-hd.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1861B14879083007DD779 /* Arial-hd.fnt */; };
+		2EE1862014879083007DD779 /* Arial-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1861C14879083007DD779 /* Arial-hd.png */; };
+		2EE1862114879083007DD779 /* Arial.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1861D14879083007DD779 /* Arial.fnt */; };
+		2EE1862214879083007DD779 /* Arial.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1861E14879083007DD779 /* Arial.png */; };
+		2EE18624148792F2007DD779 /* bird.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE18623148792F2007DD779 /* bird.png */; };
+		2EE1862914879304007DD779 /* blue-shooting-stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1862514879303007DD779 /* blue-shooting-stars.png */; };
+		2EE1862A14879304007DD779 /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1862614879303007DD779 /* cat.png */; };
+		2EE1862B14879304007DD779 /* dog.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1862714879304007DD779 /* dog.png */; };
+		2EE1862C14879304007DD779 /* turtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1862814879304007DD779 /* turtle.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -358,11 +371,26 @@
 		2EE185E4148756AC007DD779 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2EE185E6148756AC007DD779 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		2EE185E7148756AC007DD779 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		2EE185E9148756AC007DD779 /* GameScene.h */ = {isa = PBXFileReference; path = GameScene.h; sourceTree = "<group>"; };
+		2EE185E9148756AC007DD779 /* GameScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameScene.h; sourceTree = "<group>"; };
 		2EE185EA148756AC007DD779 /* GameScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameScene.m; sourceTree = "<group>"; };
 		2EE185EC148756AC007DD779 /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
 		2EE185F914876BF9007DD779 /* Bird.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bird.h; sourceTree = "<group>"; };
 		2EE185FA14876BF9007DD779 /* Bird.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bird.m; sourceTree = "<group>"; };
+		2EE1860014877C30007DD779 /* bear.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = bear.plist; path = Resources/bear.plist; sourceTree = "<group>"; };
+		2EE1860114877C30007DD779 /* bear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bear.png; path = Resources/bear.png; sourceTree = "<group>"; };
+		2EE1860C14878A6D007DD779 /* HUDLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUDLayer.h; sourceTree = "<group>"; };
+		2EE1860D14878A6D007DD779 /* HUDLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDLayer.mm; sourceTree = "<group>"; };
+		2EE1861314878B14007DD779 /* ActionLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionLayer.h; sourceTree = "<group>"; };
+		2EE1861414878B14007DD779 /* ActionLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionLayer.m; sourceTree = "<group>"; };
+		2EE1861B14879083007DD779 /* Arial-hd.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Arial-hd.fnt"; sourceTree = "<group>"; };
+		2EE1861C14879083007DD779 /* Arial-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Arial-hd.png"; sourceTree = "<group>"; };
+		2EE1861D14879083007DD779 /* Arial.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Arial.fnt; sourceTree = "<group>"; };
+		2EE1861E14879083007DD779 /* Arial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Arial.png; sourceTree = "<group>"; };
+		2EE18623148792F2007DD779 /* bird.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bird.png; sourceTree = "<group>"; };
+		2EE1862514879303007DD779 /* blue-shooting-stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-shooting-stars.png"; sourceTree = "<group>"; };
+		2EE1862614879303007DD779 /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cat.png; sourceTree = "<group>"; };
+		2EE1862714879304007DD779 /* dog.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dog.png; sourceTree = "<group>"; };
+		2EE1862814879304007DD779 /* turtle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = turtle.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -419,6 +447,7 @@
 		2EE18491148756AA007DD779 /* ptaci */ = {
 			isa = PBXGroup;
 			children = (
+				2EE1861A14879082007DD779 /* Fonts */,
 				2EE185F914876BF9007DD779 /* Bird.h */,
 				2EE185FA14876BF9007DD779 /* Bird.m */,
 				2EE185E3148756AC007DD779 /* AppDelegate.h */,
@@ -427,6 +456,10 @@
 				2EE185E7148756AC007DD779 /* RootViewController.m */,
 				2EE185E9148756AC007DD779 /* GameScene.h */,
 				2EE185EA148756AC007DD779 /* GameScene.m */,
+				2EE1861314878B14007DD779 /* ActionLayer.h */,
+				2EE1861414878B14007DD779 /* ActionLayer.m */,
+				2EE1860C14878A6D007DD779 /* HUDLayer.h */,
+				2EE1860D14878A6D007DD779 /* HUDLayer.mm */,
 				2EE185EC148756AC007DD779 /* GameConfig.h */,
 				2EE18492148756AA007DD779 /* Resources */,
 				2EE184A6148756AA007DD779 /* libs */,
@@ -438,6 +471,13 @@
 		2EE18492148756AA007DD779 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2EE18623148792F2007DD779 /* bird.png */,
+				2EE1860014877C30007DD779 /* bear.plist */,
+				2EE1862514879303007DD779 /* blue-shooting-stars.png */,
+				2EE1862614879303007DD779 /* cat.png */,
+				2EE1862714879304007DD779 /* dog.png */,
+				2EE1862814879304007DD779 /* turtle.png */,
+				2EE1860114877C30007DD779 /* bear.png */,
 				2EE18493148756AA007DD779 /* Default.png */,
 				2EE18495148756AA007DD779 /* fps_images.png */,
 				2EE18497148756AA007DD779 /* Icon-72.png */,
@@ -763,6 +803,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		2EE1861A14879082007DD779 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				2EE1861B14879083007DD779 /* Arial-hd.fnt */,
+				2EE1861C14879083007DD779 /* Arial-hd.png */,
+				2EE1861D14879083007DD779 /* Arial.fnt */,
+				2EE1861E14879083007DD779 /* Arial.png */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -822,6 +873,17 @@
 				2EE184A0148756AA007DD779 /* Icon.png in Resources */,
 				2EE184A2148756AA007DD779 /* Icon@2x.png in Resources */,
 				2EE184A5148756AA007DD779 /* iTunesArtwork in Resources */,
+				2EE1860214877C30007DD779 /* bear.plist in Resources */,
+				2EE1860314877C30007DD779 /* bear.png in Resources */,
+				2EE1861F14879083007DD779 /* Arial-hd.fnt in Resources */,
+				2EE1862014879083007DD779 /* Arial-hd.png in Resources */,
+				2EE1862114879083007DD779 /* Arial.fnt in Resources */,
+				2EE1862214879083007DD779 /* Arial.png in Resources */,
+				2EE18624148792F2007DD779 /* bird.png in Resources */,
+				2EE1862914879304007DD779 /* blue-shooting-stars.png in Resources */,
+				2EE1862A14879304007DD779 /* cat.png in Resources */,
+				2EE1862B14879304007DD779 /* dog.png in Resources */,
+				2EE1862C14879304007DD779 /* turtle.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -931,6 +993,8 @@
 				2EE185E8148756AC007DD779 /* RootViewController.m in Sources */,
 				2EE185EB148756AC007DD779 /* GameScene.m in Sources */,
 				2EE185FB14876BF9007DD779 /* Bird.m in Sources */,
+				2EE1860E14878A6E007DD779 /* HUDLayer.mm in Sources */,
+				2EE1861514878B15007DD779 /* ActionLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -977,14 +1041,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7,
+					armv6,
+				);
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ptaci/Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = ptaci/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -993,13 +1066,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					armv7,
+					armv6,
+				);
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ptaci/Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				INFOPLIST_FILE = ptaci/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};

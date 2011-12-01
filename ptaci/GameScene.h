@@ -9,18 +9,14 @@
 
 // When you import this file, you import all the cocos2d classes
 #import "cocos2d.h"
-
-// HelloWorldLayer
-@interface BirdsLayer : CCLayerColor
-{
-}
-
-@end
+#import "ActionLayer.h"
 
 @interface GameScene : CCScene
 {
-    BirdsLayer *_layer;
+    ActionLayer *_layer;
 }
-@property (nonatomic, retain) BirdsLayer *layer;
+
+@property (nonatomic, retain) ActionLayer *layer;
+
 @end
 

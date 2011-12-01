@@ -21,7 +21,7 @@
 + (id)bird {
     
     HeavyAndSlowBird *bird = nil;
-    if ((bird = [[[super alloc] initWithFile:@"Icon.png"] autorelease])) {
+    if ((bird = [[[super alloc] initWithFile:@"bird.png"] autorelease])) {
         bird.weight = 10;
         bird.minMoveDuration = 6;
         bird.maxMoveDuration = 15;
@@ -36,7 +36,7 @@
 + (id)bird {
     
     LightweightAndFastBird *bird = nil;
-    if ((bird = [[[super alloc] initWithFile:@"Icon-Small.png"] autorelease])) {
+    if ((bird = [[[super alloc] initWithFile:@"cat.png"] autorelease])) {
         bird.weight = 1;
         bird.minMoveDuration = 3;
         bird.maxMoveDuration = 5;
