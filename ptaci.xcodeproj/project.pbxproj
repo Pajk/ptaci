@@ -123,8 +123,6 @@
 		2EE185E8148756AC007DD779 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE185E7148756AC007DD779 /* RootViewController.m */; };
 		2EE185EB148756AC007DD779 /* GameScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE185EA148756AC007DD779 /* GameScene.m */; };
 		2EE185FB14876BF9007DD779 /* Bird.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE185FA14876BF9007DD779 /* Bird.m */; };
-		2EE1860214877C30007DD779 /* bear.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1860014877C30007DD779 /* bear.plist */; };
-		2EE1860314877C30007DD779 /* bear.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1860114877C30007DD779 /* bear.png */; };
 		2EE1860E14878A6E007DD779 /* HUDLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1860D14878A6D007DD779 /* HUDLayer.mm */; };
 		2EE1861514878B15007DD779 /* ActionLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1861414878B14007DD779 /* ActionLayer.m */; };
 		2EE1861F14879083007DD779 /* Arial-hd.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 2EE1861B14879083007DD779 /* Arial-hd.fnt */; };
@@ -376,8 +374,6 @@
 		2EE185EC148756AC007DD779 /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
 		2EE185F914876BF9007DD779 /* Bird.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bird.h; sourceTree = "<group>"; };
 		2EE185FA14876BF9007DD779 /* Bird.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bird.m; sourceTree = "<group>"; };
-		2EE1860014877C30007DD779 /* bear.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = bear.plist; path = Resources/bear.plist; sourceTree = "<group>"; };
-		2EE1860114877C30007DD779 /* bear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bear.png; path = Resources/bear.png; sourceTree = "<group>"; };
 		2EE1860C14878A6D007DD779 /* HUDLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HUDLayer.h; sourceTree = "<group>"; };
 		2EE1860D14878A6D007DD779 /* HUDLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = HUDLayer.mm; sourceTree = "<group>"; };
 		2EE1861314878B14007DD779 /* ActionLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionLayer.h; sourceTree = "<group>"; };
@@ -472,12 +468,10 @@
 			isa = PBXGroup;
 			children = (
 				2EE18623148792F2007DD779 /* bird.png */,
-				2EE1860014877C30007DD779 /* bear.plist */,
 				2EE1862514879303007DD779 /* blue-shooting-stars.png */,
 				2EE1862614879303007DD779 /* cat.png */,
 				2EE1862714879304007DD779 /* dog.png */,
 				2EE1862814879304007DD779 /* turtle.png */,
-				2EE1860114877C30007DD779 /* bear.png */,
 				2EE18493148756AA007DD779 /* Default.png */,
 				2EE18495148756AA007DD779 /* fps_images.png */,
 				2EE18497148756AA007DD779 /* Icon-72.png */,
@@ -873,8 +867,6 @@
 				2EE184A0148756AA007DD779 /* Icon.png in Resources */,
 				2EE184A2148756AA007DD779 /* Icon@2x.png in Resources */,
 				2EE184A5148756AA007DD779 /* iTunesArtwork in Resources */,
-				2EE1860214877C30007DD779 /* bear.plist in Resources */,
-				2EE1860314877C30007DD779 /* bear.png in Resources */,
 				2EE1861F14879083007DD779 /* Arial-hd.fnt in Resources */,
 				2EE1862014879083007DD779 /* Arial-hd.png in Resources */,
 				2EE1862114879083007DD779 /* Arial.fnt in Resources */,
