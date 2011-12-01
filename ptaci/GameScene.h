@@ -11,11 +11,16 @@
 #import "cocos2d.h"
 
 // HelloWorldLayer
-@interface HelloWorldLayer : CCLayer
+@interface BirdsLayer : CCLayerColor
 {
 }
 
-// returns a CCScene that contains the HelloWorldLayer as the only child
-+(CCScene *) scene;
-
 @end
+
+@interface GameScene : CCScene
+{
+    BirdsLayer *_layer;
+}
+@property (nonatomic, retain) BirdsLayer *layer;
+@end
+
