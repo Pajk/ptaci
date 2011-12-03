@@ -11,7 +11,7 @@
 
 #define PTM_RATIO 32
 #define ROPE_HEIGHT 100
-#define BIRDS_LIMIT 10
+#define BIRDS_LIMIT 40
 
 @implementation ActionLayer
 
@@ -19,6 +19,14 @@
 @synthesize moveAction = _moveAction;
 @synthesize walkAction = _walkAction;
 @synthesize score = _score;
+
+- (b2Vec2)toMeters:(CGPoint)point {
+    return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);
+}
+
+- (CGPoint)toPixels:(b2Vec2)vec {
+    return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
+}
 
 - (id)initWithHUD:(HUDLayer *)hud
 {
@@ -52,49 +60,65 @@
         b2BodyDef groundBodyDef;
         groundBodyDef.position.Set(0,0);
         _groundBody = _world->CreateBody(&groundBodyDef);
+        
         b2PolygonShape groundBox;
         b2FixtureDef groundBoxDef;
         groundBoxDef.shape = &groundBox;
         
-        CGFloat width = background.contentSize.width/PTM_RATIO;
-        // bottom edge
-        groundBox.SetAsEdge(b2Vec2(0,ROPE_HEIGHT/PTM_RATIO), b2Vec2(width, ROPE_HEIGHT/PTM_RATIO));
+        float widthInMeters = background.contentSize.width / PTM_RATIO;
+        float heightInMeters = (winSize.height + 200) / PTM_RATIO; 
+        b2Vec2 lowerLeftCorner = b2Vec2(0, 0);
+        b2Vec2 lowerRightCorner = b2Vec2(widthInMeters, 0); 
+        b2Vec2 upperLeftCorner = b2Vec2(0, heightInMeters);
+        b2Vec2 upperRightCorner = b2Vec2(widthInMeters, heightInMeters);
+        
+        // Bottom
+        groundBox.SetAsEdge(lowerLeftCorner, lowerRightCorner);
         _bottomFixture = _groundBody->CreateFixture(&groundBoxDef);
         
-        // left edge
-        groundBox.SetAsEdge(b2Vec2(0,0), b2Vec2(0, winSize.height/PTM_RATIO));
+        // Top
+        groundBox.SetAsEdge(upperLeftCorner, upperRightCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
-        // upper edge
-        groundBox.SetAsEdge(b2Vec2(0, (winSize.height+200)/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, (winSize.height+200)/PTM_RATIO));
+        // Left
+        groundBox.SetAsEdge(upperLeftCorner, lowerLeftCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
-        // right edge
-        groundBox.SetAsEdge(b2Vec2(width, winSize.height/PTM_RATIO), b2Vec2(width, 0));
+        // Right
+        groundBox.SetAsEdge(upperRightCorner, lowerRightCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
+        // Create birds contact listener
+        _birdsContactListener = new BirdsContactListener();
+        _world->SetContactListener(_birdsContactListener);
+
 		// create rope
 		[self createRope];
-		
+        
         // turn on bird spawning
         [self schedule:@selector(gameLogic:) interval:1.0];
         [self schedule:@selector(tick:)];
-        
-        movableSprites = [[NSMutableArray alloc] init];
         
         [self registerWithTouchDispatcher];
 	}
 	return self;
 }
 
-- (void)tick:(ccTime) dt {
-    _world->Step(dt, 10, 10);
+- (void)tick:(ccTime) delta {
+    // Advance the physics world by one step, using fixed time steps
+    float timeStep = 0.03f;
+    int32 velocityIterations = 8;
+    int32 positionIterations = 1;
+    _world->Step(timeStep, velocityIterations, positionIterations);
+    
+//    _world->Step(delta, 10, 10);
+    
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {   
 
         Bird *sprite = (Bird *)b->GetUserData();
         
         if (sprite != NULL) {
-            sprite.position = ccp(b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
+            sprite.position = [self toPixels:b->GetPosition()];
             sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
         }        
     }
@@ -218,24 +242,23 @@
     // Create bird body 
     b2BodyDef birdBodyDef;
     birdBodyDef.type = b2_dynamicBody;
-    birdBodyDef.position.Set(bird.position.x/PTM_RATIO, bird.position.y/PTM_RATIO);
+    birdBodyDef.position = [self toMeters:bird.position];
     birdBodyDef.userData = bird;
     birdBodyDef.allowSleep = true;
-//    birdBodyDef.fixedRotation = true;
+    birdBodyDef.fixedRotation = true;
     b2Body *birdBody = _world->CreateBody(&birdBodyDef);
     
-    // Create circle shape
-    b2PolygonShape circle;
-    circle.SetAsBox((bird.contentSize.width-20)/PTM_RATIO/2, (bird.contentSize.height-20)/PTM_RATIO/2);
+    // Create box shape and assing it to the bird fixture
+    b2PolygonShape shape;
+    shape.SetAsBox((bird.contentSize.width-10)/PTM_RATIO/2, (bird.contentSize.height-10)/PTM_RATIO/2);
     
     // Create shape definition and add to body
-    b2FixtureDef ballShapeDef;
-    ballShapeDef.shape = &circle;
-    ballShapeDef.density = 0.8f;
-    ballShapeDef.friction = 1.0f;
-    ballShapeDef.restitution = 0.1f;
-    birdBody->CreateFixture(&ballShapeDef);
-    //    [self letBirdFall:bird];
+    b2FixtureDef birdShapeDef;
+    birdShapeDef.shape = &shape;
+    birdShapeDef.density = 0.8f;
+    birdShapeDef.friction = 1.0f;
+    birdShapeDef.restitution = 0.1f;
+    birdBody->CreateFixture(&birdShapeDef);
 }
 
 -(void)gameLogic:(ccTime)dt {
@@ -247,32 +270,14 @@
     [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
 }
 
-- (void)selectSpriteForTouch:(CGPoint)touchLocation {
-    Bird *newSprite = nil;
-    for (Bird *sprite in movableSprites) {
-        if (CGRectContainsPoint(sprite.boundingBox, touchLocation)) {            
-            newSprite = sprite;
-            NSLog(@"selected bird");
-            break;
-        }
-    }    
-    if (newSprite != selSprite) {
-        
-        CCRotateTo * rotLeft = [CCRotateBy actionWithDuration:0.1 angle:-4.0];
-        CCRotateTo * rotCenter = [CCRotateBy actionWithDuration:0.1 angle:0.0];
-        CCRotateTo * rotRight = [CCRotateBy actionWithDuration:0.1 angle:4.0];
-        CCSequence * rotSeq = [CCSequence actions:rotLeft, rotCenter, rotRight, rotCenter, nil];
-        [newSprite runAction:[CCRepeatForever actionWithAction:rotSeq]];            
-        selSprite = newSprite;
-    }
-}
-
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     
     if (_mouseJoint != NULL) return FALSE;
     CGPoint location = [self convertTouchToNodeSpace:touch];
-    b2Vec2 locationWorld = b2Vec2(location.x/PTM_RATIO, location.y/PTM_RATIO);
+    b2Vec2 locationWorld = [self toMeters:location];
     
+    // itereate all bodies in our world and all their fixtures
+    // and check if touch location match with their position
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
         for(b2Fixture *f = b->GetFixtureList(); f; f=f->GetNext()) {
             if (f->TestPoint(locationWorld)) {
@@ -316,7 +321,7 @@
         
     } else {
         
-        b2Vec2 locationWorld = b2Vec2(location.x/PTM_RATIO, location.y/PTM_RATIO);
+        b2Vec2 locationWorld = [self toMeters:location];
         _mouseJoint->SetTarget(locationWorld);
 //        if (location.x < 100 || location.x > winSize.width-100) {
         CGPoint translation = ccpSub(oldTouchLocation, location);   
@@ -345,7 +350,7 @@
 }
 
 // on "dealloc" you need to release all your retained objects
-- (void) dealloc
+- (void)dealloc
 {
 	// in case you have something to dealloc, do it in this method
 	// in this particular example nothing needs to be released.
@@ -353,9 +358,7 @@
     self.bear = nil;
     self.walkAction = nil;
     
-    [movableSprites release];
-    movableSprites = nil;
-    
+    delete _birdsContactListener;
     delete _world;
     _groundBody = NULL;
     

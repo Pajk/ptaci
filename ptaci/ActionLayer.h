@@ -12,6 +12,7 @@
 
 #import "HUDLayer.h"
 #import "Bird.h"
+#import "BirdsContactListener.h"
 
 @interface ActionLayer : CCLayerColor
 {
@@ -30,9 +31,9 @@
 	b2Body* boxBody;
     
     CCSprite *background;
-    Bird *selSprite;
-    NSMutableArray *movableSprites;
- 
+    
+    BirdsContactListener *_birdsContactListener;
+    
     CGSize winSize;
     HUDLayer *_hud;
     int _score;

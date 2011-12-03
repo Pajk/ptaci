@@ -156,7 +156,6 @@
 		2E14D3471487CA6D00CBD63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3461487CA6D00CBD63C /* main.m */; };
 		2E14D34A1487CA6D00CBD63C /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3491487CA6D00CBD63C /* AppDelegate.mm */; };
 		2E14D34D1487CA6D00CBD63C /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D34C1487CA6D00CBD63C /* RootViewController.m */; };
-		2E14D3501487CA6D00CBD63C /* HelloWorldLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D34F1487CA6D00CBD63C /* HelloWorldLayer.mm */; };
 		2E14D3531487CA6D00CBD63C /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3521487CA6D00CBD63C /* GLES-Render.mm */; };
 		2E14D3561487CA6D00CBD63C /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D3551487CA6D00CBD63C /* blocks.png */; };
 		2E14D3681487CAD600CBD63C /* ActionLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3611487CAD600CBD63C /* ActionLayer.mm */; };
@@ -168,6 +167,7 @@
 		2E14D3721487CAF200CBD63C /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D36F1487CAF200CBD63C /* cat.png */; };
 		B9BBB2B8148A26DC00216667 /* fitting.png in Resources */ = {isa = PBXBuildFile; fileRef = B9BBB2B6148A26DC00216667 /* fitting.png */; };
 		B9BBB2B9148A26DC00216667 /* segment.png in Resources */ = {isa = PBXBuildFile; fileRef = B9BBB2B7148A26DC00216667 /* segment.png */; };
+		2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -476,8 +476,6 @@
 		2E14D3491487CA6D00CBD63C /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		2E14D34B1487CA6D00CBD63C /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		2E14D34C1487CA6D00CBD63C /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		2E14D34E1487CA6D00CBD63C /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
-		2E14D34F1487CA6D00CBD63C /* HelloWorldLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HelloWorldLayer.mm; sourceTree = "<group>"; };
 		2E14D3511487CA6D00CBD63C /* GLES-Render.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
 		2E14D3521487CA6D00CBD63C /* GLES-Render.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "GLES-Render.mm"; sourceTree = "<group>"; };
 		2E14D3541487CA6D00CBD63C /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
@@ -495,6 +493,8 @@
 		2E14D36F1487CAF200CBD63C /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cat.png; sourceTree = "<group>"; };
 		B9BBB2B6148A26DC00216667 /* fitting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fitting.png; sourceTree = "<group>"; };
 		B9BBB2B7148A26DC00216667 /* segment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = segment.png; sourceTree = "<group>"; };
+		2EE959E0148A2E7600F24552 /* BirdsContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BirdsContactListener.h; sourceTree = "<group>"; };
+		2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BirdsContactListener.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -551,23 +551,15 @@
 		2E14D1831487CA6A00CBD63C /* ptaci */ = {
 			isa = PBXGroup;
 			children = (
+				2E14D3641487CAD600CBD63C /* GameScene.h */,
+				2E14D3651487CAD600CBD63C /* GameScene.mm */,
+				2EE959D8148A114A00F24552 /* Layers */,
+				2EE959D9148A118200F24552 /* Sprites */,
+				2EE959DF148A2E4100F24552 /* Physics */,
 				2E14D3481487CA6D00CBD63C /* AppDelegate.h */,
 				2E14D3491487CA6D00CBD63C /* AppDelegate.mm */,
 				2E14D34B1487CA6D00CBD63C /* RootViewController.h */,
 				2E14D34C1487CA6D00CBD63C /* RootViewController.m */,
-				2E14D3601487CAD600CBD63C /* ActionLayer.h */,
-				2E14D3611487CAD600CBD63C /* ActionLayer.mm */,
-				2E14D3621487CAD600CBD63C /* Bird.h */,
-				2E14D3631487CAD600CBD63C /* Bird.mm */,
-				2E14D3641487CAD600CBD63C /* GameScene.h */,
-				2E14D3651487CAD600CBD63C /* GameScene.mm */,
-				2E14D3661487CAD600CBD63C /* HUDLayer.h */,
-				2E14D3671487CAD600CBD63C /* HUDLayer.mm */,
-				2E14D34E1487CA6D00CBD63C /* HelloWorldLayer.h */,
-				2E14D34F1487CA6D00CBD63C /* HelloWorldLayer.mm */,
-				2E14D3511487CA6D00CBD63C /* GLES-Render.h */,
-				2E14D3521487CA6D00CBD63C /* GLES-Render.mm */,
-				2E14D3541487CA6D00CBD63C /* GameConfig.h */,
 				2E14D1841487CA6A00CBD63C /* Resources */,
 				2E14D1981487CA6A00CBD63C /* libs */,
 				2E14D3441487CA6D00CBD63C /* Supporting Files */,
@@ -1032,10 +1024,42 @@
 		2E14D3441487CA6D00CBD63C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2E14D3511487CA6D00CBD63C /* GLES-Render.h */,
+				2E14D3521487CA6D00CBD63C /* GLES-Render.mm */,
+				2E14D3541487CA6D00CBD63C /* GameConfig.h */,
 				2E14D3451487CA6D00CBD63C /* Prefix.pch */,
 				2E14D3461487CA6D00CBD63C /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2EE959D8148A114A00F24552 /* Layers */ = {
+			isa = PBXGroup;
+			children = (
+				2E14D3601487CAD600CBD63C /* ActionLayer.h */,
+				2E14D3611487CAD600CBD63C /* ActionLayer.mm */,
+				2E14D3661487CAD600CBD63C /* HUDLayer.h */,
+				2E14D3671487CAD600CBD63C /* HUDLayer.mm */,
+			);
+			name = Layers;
+			sourceTree = "<group>";
+		};
+		2EE959D9148A118200F24552 /* Sprites */ = {
+			isa = PBXGroup;
+			children = (
+				2E14D3621487CAD600CBD63C /* Bird.h */,
+				2E14D3631487CAD600CBD63C /* Bird.mm */,
+			);
+			name = Sprites;
+			sourceTree = "<group>";
+		};
+		2EE959DF148A2E4100F24552 /* Physics */ = {
+			isa = PBXGroup;
+			children = (
+				2EE959E0148A2E7600F24552 /* BirdsContactListener.h */,
+				2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */,
+			);
+			name = Physics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1245,12 +1269,12 @@
 				2E14D3471487CA6D00CBD63C /* main.m in Sources */,
 				2E14D34A1487CA6D00CBD63C /* AppDelegate.mm in Sources */,
 				2E14D34D1487CA6D00CBD63C /* RootViewController.m in Sources */,
-				2E14D3501487CA6D00CBD63C /* HelloWorldLayer.mm in Sources */,
 				2E14D3531487CA6D00CBD63C /* GLES-Render.mm in Sources */,
 				2E14D3681487CAD600CBD63C /* ActionLayer.mm in Sources */,
 				2E14D3691487CAD600CBD63C /* Bird.mm in Sources */,
 				2E14D36A1487CAD600CBD63C /* GameScene.mm in Sources */,
 				2E14D36B1487CAD600CBD63C /* HUDLayer.mm in Sources */,
+				2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
