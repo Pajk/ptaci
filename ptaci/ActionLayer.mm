@@ -8,6 +8,7 @@
 
 #import "ActionLayer.h"
 #import "Bird.h"
+#import <list>
 
 #define PTM_RATIO 32
 #define ROPE_HEIGHT 100
@@ -165,6 +166,7 @@
     std::vector<b2Body *>toBattle; 
     std::vector<b2Body *>toLove;
     std::vector<BirdsContact>::iterator pos;
+    std::list<b2Body *>toDestroy;
     for(pos = _birdsContactListener->_contacts.begin(); 
         pos != _birdsContactListener->_contacts.end(); ++pos) {
         BirdsContact contact = *pos;
@@ -186,14 +188,16 @@
                     // Same type -> love making
                     if ([spriteA isKindOfClass:[spriteB class]]) {
                         self.score++;
+                        toDestroy.push_back(bodyA);
 //                        toLove.push_back(bodyA);
 //                        toLove.push_back(bodyB);
     //                    birdA.color = ccRED;
     //                    birdB.color = ccRED;
-                        // Different types -> battle
+                    // Different types -> battle
                     } else {
                         self.score--;
-                        toBattle.push_back(bodyA);
+                        toDestroy.push_back(bodyA);
+//                        toBattle.push_back(bodyA);
 //                        toBattle.push_back(bodyB);
     //                    birdA.color = ccBLACK;
     //                    birdB.color = ccBLACK;
@@ -203,9 +207,9 @@
             }
         }        
     }
-    
-    std::vector<b2Body *>::iterator pos2;
-    for(pos2 = toBattle.begin(); pos2 != toBattle.end(); ++pos2) {
+    toDestroy.unique();
+    std::list<b2Body *>::iterator pos2;
+    for(pos2 = toDestroy.begin(); pos2 != toDestroy.end(); ++pos2) {
         b2Body *body = *pos2;     
         if (body && body->GetUserData() != NULL) {
             CCSprite *sprite = (CCSprite *) body->GetUserData();
@@ -213,13 +217,21 @@
                 [self removeChild:sprite cleanup:YES];
             }
         }
+        
+        for (b2JointEdge* jointEdge = body->GetJointList(); jointEdge != NULL; jointEdge = jointEdge->next)
+        {
+            b2Joint* targetJoint = jointEdge->joint;
+            if (_mouseJoint == targetJoint) {
+                _mouseJoint = NULL;
+            } 
+        }
         _world->DestroyBody(body);
     }
 }
 
 - (void)createRope {
     
-	static float segmentWidth = 15.0f;
+	static float segmentWidth = 10.0f;
 	static float segmentHeight = 3.0f;
 	
 	NSLog(@"sirka sveta %f", worldWidth);
@@ -301,12 +313,12 @@
     b2Body *birdBody = _world->CreateBody(&birdBodyDef);
     
     // Create box shape and assing it to the bird fixture
-    b2PolygonShape shape;
-    shape.SetAsBox((bird.contentSize.width-10)/PTM_RATIO/2, (bird.contentSize.height-10)/PTM_RATIO/2);
+    b2PolygonShape birdShape;
+    birdShape.SetAsBox((bird.contentSize.width-10)/PTM_RATIO/2, (bird.contentSize.height-10)/PTM_RATIO/2);
     
     // Create shape definition and add to body
     b2FixtureDef birdShapeDef;
-    birdShapeDef.shape = &shape;
+    birdShapeDef.shape = &birdShape;
     birdShapeDef.density = 0.8f;
     birdShapeDef.friction = 1.0f;
     birdShapeDef.restitution = 0.1f;
