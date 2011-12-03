@@ -15,9 +15,6 @@
 
 @implementation ActionLayer
 
-@synthesize bear = _bear;
-@synthesize moveAction = _moveAction;
-@synthesize walkAction = _walkAction;
 @synthesize score = _score;
 
 - (b2Vec2)toMeters:(CGPoint)point {
@@ -26,6 +23,42 @@
 
 - (CGPoint)toPixels:(b2Vec2)vec {
     return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
+}
+
+-(void) enableBox2dDebugDrawing {
+    debugDraw = new GLESDebugDraw( PTM_RATIO );
+    _world->SetDebugDraw(debugDraw);
+    
+    uint32 flags = 0;
+    flags += b2DebugDraw::e_shapeBit;
+    //		flags += b2DebugDraw::e_jointBit;
+    //		flags += b2DebugDraw::e_aabbBit;
+    //		flags += b2DebugDraw::e_pairBit;
+    //		flags += b2DebugDraw::e_centerOfMassBit;
+    debugDraw->SetFlags(flags);		
+}
+
+- (void)draw {
+    glDisable(GL_TEXTURE_2D);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    
+    
+	// Draws the Box2d Data in RetinaDisplay
+	glPushMatrix();
+	
+	float scale = CC_CONTENT_SCALE_FACTOR();
+	glScalef( scale, scale, 1 );
+	
+	_world->DrawDebugData();
+    
+	glPopMatrix();
+	
+	// restore default GL states
+	glEnable(GL_TEXTURE_2D);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);	
+    
 }
 
 - (id)initWithHUD:(HUDLayer *)hud
@@ -41,9 +74,11 @@
         // set layer background
         [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGB565];
         background = [CCSprite spriteWithFile:@"blue-shooting-stars.png"];
-        background.anchorPoint = ccp(0,0);
-        [self addChild:background];
-        [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
+        worldWidth = background.contentSize.width;
+        
+//        background.anchorPoint = ccp(0,0);
+//        [self addChild:background];
+//        [CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_Default];
         
         winSize = [CCDirector sharedDirector].winSize;
 		
@@ -51,14 +86,9 @@
         b2Vec2 gravity;
         gravity.Set(0.0f, -10.0f);
         _world = new b2World(gravity, true);
-//        float32 timeStep = 1.0f / 60.f;
-//        int32 velocityIterations = 10;
-//        int32 positionIterations = 8;
-//        _world->Step(timeStep, velocityIterations, positionIterations);
 		
 		// Debug Draw functions
-		debugDraw = new GLESDebugDraw([[CCDirector sharedDirector] contentScaleFactor] * PTM_RATIO); 
-		_world->SetDebugDraw(debugDraw);
+        [self enableBox2dDebugDrawing];
 		
 		uint32 flags = 0;
 		flags |= b2DebugDraw::e_shapeBit;
@@ -77,7 +107,7 @@
         b2FixtureDef groundBoxDef;
         groundBoxDef.shape = &groundBox;
         
-        float widthInMeters = background.contentSize.width / PTM_RATIO;
+        float widthInMeters = worldWidth / PTM_RATIO;
         float heightInMeters = (winSize.height + 200) / PTM_RATIO; 
         b2Vec2 lowerLeftCorner = b2Vec2(0, 0);
         b2Vec2 lowerRightCorner = b2Vec2(widthInMeters, 0); 
@@ -123,114 +153,19 @@
     int32 positionIterations = 1;
     _world->Step(timeStep, velocityIterations, positionIterations);
     
-//    _world->Step(delta, 10, 10);
-    
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {   
 
-        Bird *sprite = (Bird *)b->GetUserData();
-        
-        if (sprite != NULL) {
-            sprite.position = [self toPixels:b->GetPosition()];
-            sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
-        }        
+//        SPRITES
+//        Bird *sprite = (Bird *)b->GetUserData();
+//        if (sprite != NULL) {
+//            sprite.position = [self toPixels:b->GetPosition()];
+//            sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
+//        }        
     }
 }
 
 - (void)createRope {
-	
-	// left fitting
-	CCSprite *leftFitSprite = [CCSprite spriteWithFile:@"fitting.png"];
-	leftFitSprite.position = ccp(0, ROPE_HEIGHT);
-	[self addChild:leftFitSprite];
-	
-	b2CircleShape leftFitShape;
-	leftFitShape.m_radius = 10.0f/PTM_RATIO;
-	b2FixtureDef leftFitFixture;
-	leftFitFixture.shape = &leftFitShape;
-	b2BodyDef leftFitBodyDef;
-	leftFitBodyDef.position.Set(leftFitSprite.position.x/PTM_RATIO, leftFitSprite.position.y/PTM_RATIO);
-	b2Body *leftFitBody = _world->CreateBody(&leftFitBodyDef);
-	leftFitBody->CreateFixture(&leftFitFixture);
-	
-	// right fittng
-	CCSprite *rightFitSprite = [CCSprite spriteWithFile:@"fitting.png"];
-	rightFitSprite.position = ccp(background.contentSize.width, ROPE_HEIGHT);
-	[self addChild:rightFitSprite];
-	
-	b2CircleShape rightFitShape;
-	rightFitShape.m_radius = 10.0f/PTM_RATIO;
-	b2FixtureDef rightFitFixture;
-	rightFitFixture.shape = &rightFitShape;
-	b2BodyDef rightFitBodyDef;
-	rightFitBodyDef.position.Set(rightFitSprite.position.x/PTM_RATIO, rightFitSprite.position.y/PTM_RATIO);
-	b2Body *rightFitBody = _world->CreateBody(&rightFitBodyDef);
-	rightFitBody->CreateFixture(&rightFitFixture);
-	
-	// rope
-	b2PolygonShape ropeShape;
-	ropeShape.SetAsBox(50.0f/PTM_RATIO, 10.0f/PTM_RATIO);
-	b2FixtureDef ropeFixture;
-	ropeFixture.density = 1.0f;
-	ropeFixture.shape = &ropeShape;
-	b2BodyDef ropeBodyDef;
-	ropeBodyDef.linearDamping = 0.2;
-	ropeBodyDef.angularDamping = 0.2;
-//	b2MassData ropeMass;
-//	ropeMass.mass = 1;
-//	ropeMass.I = 100;
-	
-	ropeBodyDef.position.Set(0, ROPE_HEIGHT/PTM_RATIO);
-	b2Body *ropeBody = _world->CreateBody(&ropeBodyDef);
-//	ropeBody->SetMassData(&ropeMass);
-	ropeBody->CreateFixture(&ropeFixture);
-	
-	ropeBodyDef.position.Set(50.0f/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
-	ropeBody = _world->CreateBody(&ropeBodyDef);
-	//	ropeBody->SetMassData(&ropeMass);
-	ropeBody->CreateFixture(&ropeFixture);
-	
-	b2Body *ropeStart = leftFitBody;
-	
-	b2DistanceJointDef jointDef;
-	b2DistanceJoint* joint;
-	float dX = rightFitBody->GetPosition().x*PTM_RATIO;
-	NSLog(@"width = %f", dX);
-	int numSections = ceil(dX/50.0f);
-	int segWidth = dX/numSections;
-	NSLog(@"number of sections %d", numSections);
-	
-	for (int i=0; i<numSections; i++) {
-		
-		CCSprite *segmentSprite = [CCSprite spriteWithFile:@"segment.png"];
-		segmentSprite.position = ccp((i*segWidth), ROPE_HEIGHT);
-		[self addChild:segmentSprite];
-		
-		NSLog(@"add segment at %d %d", (i*segWidth), ROPE_HEIGHT);
-			
-		// mass data
-//		b2MassData massData;
-//		massData.mass = 0.8+0.8*i/numSections;
-		
-		ropeBodyDef.position.Set((i*segWidth)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
-//		ropeBody = _world->CreateBody(&ropeBodyDef);
-//		ropeBody->SetMassData(&massData);
-		ropeBody->CreateFixture(&ropeFixture);
-		
-//		jointDef.Initialize(ropeStart, ropeBody, ropeStart->GetPosition(),ropeBody->GetPosition());
-//		joint = (b2DistanceJoint*) _world->CreateJoint(&jointDef);
-//		joint->SetLength(segWidth);
-
-		ropeStart = ropeBody;
-	}
-	
-	CCSprite *segmentSprite = [CCSprite spriteWithFile:@"segment.png"];
-	segmentSprite.position = ccp((numSections*segWidth), ROPE_HEIGHT);
-	[self addChild:segmentSprite];
-
-	// last joint
-//	jointDef.Initialize(ropeBody, rightFitBody, ropeBody->GetPosition(), rightFitBody->GetPosition());
-//	joint = (b2DistanceJoint *)_world->CreateJoint(&jointDef);
-//	joint->SetLength(segWidth);
+    
 }
 
 -(void)addBird {
@@ -247,14 +182,15 @@
     }
     // Determine where to spawn the bird along the X axis
     int minX = bird.contentSize.width/2;
-    int maxX = background.contentSize.width - bird.contentSize.width/2;
+    int maxX = worldWidth - bird.contentSize.width/2;
     int rangeX = maxX - minX;
     int actualX = (arc4random() % rangeX) + minX;
     
     // Create the bird slightly off-screen along the right edge,
     // and along a random position along the Y axis as calculated above
     bird.position = ccp(actualX, winSize.height + (bird.contentSize.height/2));
-    [self addChild:bird];
+//    SPRITES
+//    [self addChild:bird];
     
     // Create bird body 
     b2BodyDef birdBodyDef;
@@ -317,7 +253,7 @@
 - (CGPoint)boundLayerPos:(CGPoint)newPos {
     CGPoint retval = newPos;
     retval.x = MIN(retval.x, 0);
-    retval.x = MAX(retval.x, -background.contentSize.width+winSize.width); 
+    retval.x = MAX(retval.x, -worldWidth+winSize.width); 
     retval.y = self.position.y;
     return retval;
 }
@@ -372,9 +308,7 @@
 	// in case you have something to dealloc, do it in this method
 	// in this particular example nothing needs to be released.
 	// cocos2d will automatically release all the children (Label)
-    self.bear = nil;
-    self.walkAction = nil;
-    
+
     delete _birdsContactListener;
     delete _world;
     _groundBody = NULL;
@@ -383,10 +317,4 @@
 	[super dealloc];
 }
 
-- (void)draw {
-	glEnableClientState(GL_VERTEX_ARRAY);
-	_world->DrawDebugData();
-	// restore default GL states 
-	glDisableClientState(GL_VERTEX_ARRAY);
-}
 @end

@@ -15,12 +15,7 @@
 #import "BirdsContactListener.h"
 
 @interface ActionLayer : CCLayerColor
-{
-    CCSprite *_bear;
-    CCAction *_walkAction;
-    CCAction *_moveAction;
-    BOOL _moving;
-    
+{   
     b2World *_world;
     b2Body *_groundBody;
     
@@ -39,11 +34,9 @@
     int _score;
 	
 	GLESDebugDraw *debugDraw;
+    CGFloat worldWidth;
 }
 
-@property (nonatomic, retain) CCSprite *bear;
-@property (nonatomic, retain) CCAction *walkAction;
-@property (nonatomic, retain) CCAction *moveAction;
 @property (nonatomic, assign) int score;
 
 - (id)initWithHUD:(HUDLayer *)hud;
