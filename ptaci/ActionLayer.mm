@@ -20,6 +20,14 @@
 @synthesize walkAction = _walkAction;
 @synthesize score = _score;
 
+- (b2Vec2)toMeters:(CGPoint)point {
+    return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);
+}
+
+- (CGPoint)toPixels:(b2Vec2)vec {
+    return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
+}
+
 - (id)initWithHUD:(HUDLayer *)hud
 {
 	if( (self=[super initWithColor:ccc4(0,0,255,255)])) {
@@ -96,7 +104,7 @@
         Bird *sprite = (Bird *)b->GetUserData();
         
         if (sprite != NULL) {
-            sprite.position = ccp(b->GetPosition().x * PTM_RATIO, b->GetPosition().y * PTM_RATIO);
+            sprite.position = [self toPixels:b->GetPosition()];
             sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
         }        
     }
@@ -155,7 +163,7 @@
     
     if (_mouseJoint != NULL) return FALSE;
     CGPoint location = [self convertTouchToNodeSpace:touch];
-    b2Vec2 locationWorld = b2Vec2(location.x/PTM_RATIO, location.y/PTM_RATIO);
+    b2Vec2 locationWorld = [self toMeters:location];
     
     // itereate all bodies in our world and all their fixtures
     // and check if touch location match with their position
@@ -202,7 +210,7 @@
         
     } else {
         
-        b2Vec2 locationWorld = b2Vec2(location.x/PTM_RATIO, location.y/PTM_RATIO);
+        b2Vec2 locationWorld = [self toMeters:location];
         _mouseJoint->SetTarget(locationWorld);
 //        if (location.x < 100 || location.x > winSize.width-100) {
         CGPoint translation = ccpSub(oldTouchLocation, location);   
@@ -231,7 +239,7 @@
 }
 
 // on "dealloc" you need to release all your retained objects
-- (void) dealloc
+- (void)dealloc
 {
 	// in case you have something to dealloc, do it in this method
 	// in this particular example nothing needs to be released.
