@@ -88,6 +88,10 @@
         groundBox.SetAsEdge(upperRightCorner, lowerRightCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
+        // Create birds contact listener
+        _birdsContactListener = new BirdsContactListener();
+        _world->SetContactListener(_birdsContactListener);
+        
         // turn on bird spawning
         [self schedule:@selector(gameLogic:) interval:1.0];
         [self schedule:@selector(tick:)];
@@ -97,8 +101,15 @@
 	return self;
 }
 
-- (void)tick:(ccTime) dt {
-    _world->Step(dt, 10, 10);
+- (void)tick:(ccTime) delta {
+    // Advance the physics world by one step, using fixed time steps
+    float timeStep = 0.03f;
+    int32 velocityIterations = 8;
+    int32 positionIterations = 1;
+    _world->Step(timeStep, velocityIterations, positionIterations);
+    
+//    _world->Step(delta, 10, 10);
+    
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {   
 
         Bird *sprite = (Bird *)b->GetUserData();
@@ -131,23 +142,23 @@
     // Create bird body 
     b2BodyDef birdBodyDef;
     birdBodyDef.type = b2_dynamicBody;
-    birdBodyDef.position.Set(bird.position.x/PTM_RATIO, bird.position.y/PTM_RATIO);
+    birdBodyDef.position = [self toMeters:bird.position];
     birdBodyDef.userData = bird;
     birdBodyDef.allowSleep = true;
     birdBodyDef.fixedRotation = true;
     b2Body *birdBody = _world->CreateBody(&birdBodyDef);
     
-    // Create circle shape
-    b2PolygonShape circle;
-    circle.SetAsBox((bird.contentSize.width-20)/PTM_RATIO/2, (bird.contentSize.height-20)/PTM_RATIO/2);
+    // Create box shape and assing it to the bird fixture
+    b2PolygonShape shape;
+    shape.SetAsBox((bird.contentSize.width-10)/PTM_RATIO/2, (bird.contentSize.height-10)/PTM_RATIO/2);
     
     // Create shape definition and add to body
-    b2FixtureDef ballShapeDef;
-    ballShapeDef.shape = &circle;
-    ballShapeDef.density = 0.8f;
-    ballShapeDef.friction = 1.0f;
-    ballShapeDef.restitution = 0.1f;
-    birdBody->CreateFixture(&ballShapeDef);
+    b2FixtureDef birdShapeDef;
+    birdShapeDef.shape = &shape;
+    birdShapeDef.density = 0.8f;
+    birdShapeDef.friction = 1.0f;
+    birdShapeDef.restitution = 0.1f;
+    birdBody->CreateFixture(&birdShapeDef);
 }
 
 -(void)gameLogic:(ccTime)dt {
@@ -247,6 +258,7 @@
     self.bear = nil;
     self.walkAction = nil;
     
+    delete _birdsContactListener;
     delete _world;
     _groundBody = NULL;
     

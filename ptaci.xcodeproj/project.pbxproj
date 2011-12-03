@@ -165,6 +165,7 @@
 		2E14D3701487CAF200CBD63C /* bird.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D36D1487CAF200CBD63C /* bird.png */; };
 		2E14D3711487CAF200CBD63C /* blue-shooting-stars.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D36E1487CAF200CBD63C /* blue-shooting-stars.png */; };
 		2E14D3721487CAF200CBD63C /* cat.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D36F1487CAF200CBD63C /* cat.png */; };
+		2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -488,6 +489,8 @@
 		2E14D36D1487CAF200CBD63C /* bird.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bird.png; sourceTree = "<group>"; };
 		2E14D36E1487CAF200CBD63C /* blue-shooting-stars.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blue-shooting-stars.png"; sourceTree = "<group>"; };
 		2E14D36F1487CAF200CBD63C /* cat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cat.png; sourceTree = "<group>"; };
+		2EE959E0148A2E7600F24552 /* BirdsContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BirdsContactListener.h; sourceTree = "<group>"; };
+		2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BirdsContactListener.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -548,6 +551,7 @@
 				2E14D3651487CAD600CBD63C /* GameScene.mm */,
 				2EE959D8148A114A00F24552 /* Layers */,
 				2EE959D9148A118200F24552 /* Sprites */,
+				2EE959DF148A2E4100F24552 /* Physics */,
 				2E14D3481487CA6D00CBD63C /* AppDelegate.h */,
 				2E14D3491487CA6D00CBD63C /* AppDelegate.mm */,
 				2E14D34B1487CA6D00CBD63C /* RootViewController.h */,
@@ -1043,6 +1047,15 @@
 			name = Sprites;
 			sourceTree = "<group>";
 		};
+		2EE959DF148A2E4100F24552 /* Physics */ = {
+			isa = PBXGroup;
+			children = (
+				2EE959E0148A2E7600F24552 /* BirdsContactListener.h */,
+				2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */,
+			);
+			name = Physics;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1253,6 +1266,7 @@
 				2E14D3691487CAD600CBD63C /* Bird.mm in Sources */,
 				2E14D36A1487CAD600CBD63C /* GameScene.mm in Sources */,
 				2E14D36B1487CAD600CBD63C /* HUDLayer.mm in Sources */,
+				2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

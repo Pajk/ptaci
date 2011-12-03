@@ -12,6 +12,7 @@
 
 #import "HUDLayer.h"
 #import "Bird.h"
+#import "BirdsContactListener.h"
 
 @interface ActionLayer : CCLayerColor
 {
@@ -28,6 +29,8 @@
     b2MouseJoint *_mouseJoint;
     
     CCSprite *background;
+    
+    BirdsContactListener *_birdsContactListener;
     
     CGSize winSize;
     HUDLayer *_hud;
