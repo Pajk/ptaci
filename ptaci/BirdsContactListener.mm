@@ -9,17 +9,23 @@
 #import "BirdsContactListener.h"
 
 #import "cocos2d.h" 
+#import "Bird.h"
 
 void BirdsContactListener::BeginContact(b2Contact* contact)
 {
     b2Body* bodyA = contact->GetFixtureA()->GetBody();
     b2Body* bodyB = contact->GetFixtureB()->GetBody();
+    
     CCSprite* spriteA = (CCSprite*)bodyA->GetUserData();
     CCSprite* spriteB = (CCSprite*)bodyB->GetUserData();
-
-    if (spriteA != NULL && spriteB != NULL) {
-        spriteA.color = ccMAGENTA;
-        spriteB.color = ccMAGENTA;
+    
+    if ([spriteA isKindOfClass:[Bird class]] &&
+        [spriteB isKindOfClass:[Bird class]]) {
+        
+        Bird *birdA = (Bird*)spriteA;
+        Bird *birdB = (Bird*)spriteB;
+        birdA.color = ccMAGENTA;
+        birdB.color = ccMAGENTA;
     }
 }
 
