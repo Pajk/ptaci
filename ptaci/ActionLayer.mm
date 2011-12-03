@@ -25,7 +25,7 @@
     return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
 }
 
--(void) enableBox2dDebugDrawing {
+- (void)enableBox2dDebugDrawing {
     debugDraw = new GLESDebugDraw( PTM_RATIO );
     _world->SetDebugDraw(debugDraw);
     
@@ -35,7 +35,7 @@
     //		flags += b2DebugDraw::e_aabbBit;
     //		flags += b2DebugDraw::e_pairBit;
     //		flags += b2DebugDraw::e_centerOfMassBit;
-    debugDraw->SetFlags(flags);		
+    debugDraw->SetFlags(flags);
 }
 
 - (void)draw {
@@ -89,14 +89,10 @@
 		
 		// Debug Draw functions
         [self enableBox2dDebugDrawing];
-		
-		uint32 flags = 0;
-		flags |= b2DebugDraw::e_shapeBit;
-		flags |= b2DebugDraw::e_jointBit;
-		// flags |= b2DebugDraw::e_aabbBit;
-		// flags |= b2DebugDraw::e_pairBit;
-		// flags |= b2DebugDraw::e_centerOfMassBit; 
-		debugDraw->SetFlags(flags);
+
+        // create rope
+		[self createRope];
+
 		
         // Create edges around the entire screen
         b2BodyDef groundBodyDef;
@@ -119,8 +115,8 @@
         _bottomFixture = _groundBody->CreateFixture(&groundBoxDef);
         
         // Top
-        groundBox.SetAsEdge(upperLeftCorner, upperRightCorner);
-        _groundBody->CreateFixture(&groundBoxDef);
+//        groundBox.SetAsEdge(upperLeftCorner, upperRightCorner);
+//        _groundBody->CreateFixture(&groundBoxDef);
         
         // Left
         groundBox.SetAsEdge(upperLeftCorner, lowerLeftCorner);
@@ -133,10 +129,7 @@
         // Create birds contact listener
         _birdsContactListener = new BirdsContactListener();
         _world->SetContactListener(_birdsContactListener);		
-		
-		// create rope
-		[self createRope];
-        
+            
         // turn on bird spawning
         [self schedule:@selector(gameLogic:) interval:1.0];
         [self schedule:@selector(tick:)];
@@ -165,7 +158,43 @@
 }
 
 - (void)createRope {
+    b2Body* ground = NULL;
+    {   
+    b2BodyDef bd;
+    ground = _world->CreateBody(&bd);
     
+    b2PolygonShape shape;
+    shape.SetAsEdge(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+    ground->CreateFixture(&shape, 0.0f);
+    }
+    
+    b2PolygonShape shape;
+    shape.SetAsBox(0.6f, 0.125f);
+
+    b2FixtureDef fd;
+    fd.shape = &shape;
+    fd.density = 20.0f;
+    fd.friction = 0.2f;
+
+    b2RevoluteJointDef jd;
+    jd.collideConnected = false;
+
+    const float32 y = 25.0f;
+    b2Body* prevBody = ground;
+    for (int32 i = 0; i < 30; ++i)
+    {
+        b2BodyDef bd;
+        bd.type = b2_dynamicBody;
+        bd.position.Set(0.5f + i, y);
+        b2Body* body = _world->CreateBody(&bd);
+        body->CreateFixture(&fd);
+        
+        b2Vec2 anchor(float32(i), y);
+        jd.Initialize(prevBody, body, anchor);
+        _world->CreateJoint(&jd);
+        
+        prevBody = body;
+    }
 }
 
 -(void)addBird {
