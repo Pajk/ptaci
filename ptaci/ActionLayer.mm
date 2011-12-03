@@ -231,7 +231,7 @@
 
 - (void)createRope {
     
-	static float segmentWidth = 100.0f;
+	static float segmentWidth = 80.0f;
 	static float segmentHeight = 10.0f;
 	
 	NSLog(@"sirka sveta %f", worldWidth);
@@ -256,11 +256,11 @@
     jd.collideConnected = false;
 	
     b2Body* prevBody = leftFix;
-    for (int32 i = 0; i < (worldWidth/segmentWidth); ++i)
+    for (int32 i = 0; i < (worldWidth/segmentWidth)-1; ++i)
     {
 		
 		fixDef.type = b2_dynamicBody;
-        fixDef.position.Set((i * segmentWidth)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
+        fixDef.position.Set(((i * segmentWidth) + segmentWidth/2)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
         b2Body* body = _world->CreateBody(&fixDef);
         body->CreateFixture(&fd);
         
@@ -270,7 +270,7 @@
 			_world->CreateJoint(&jd);
 		}
 		else {
-			b2Vec2 anchor(((i * segmentWidth) - segmentWidth/2)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
+			b2Vec2 anchor((i * segmentWidth)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
 			jd.Initialize(prevBody, body, anchor);
 			_world->CreateJoint(&jd);
 		}
