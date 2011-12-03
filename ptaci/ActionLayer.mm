@@ -127,7 +127,12 @@
         return;
     }
     
-    Bird *bird = [HeavyAndSlowBird bird];
+    Bird *bird = nil;
+    if (arc4random()%(unsigned)2) {
+        bird = [HeavyAndSlowBird bird];
+    } else {
+        bird = [LightweightAndFastBird bird];
+    }
     // Determine where to spawn the bird along the X axis
     int minX = bird.contentSize.width/2;
     int maxX = background.contentSize.width - bird.contentSize.width/2;

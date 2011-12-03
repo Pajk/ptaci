@@ -19,13 +19,22 @@ void BirdsContactListener::BeginContact(b2Contact* contact)
     CCSprite* spriteA = (CCSprite*)bodyA->GetUserData();
     CCSprite* spriteB = (CCSprite*)bodyB->GetUserData();
     
+    // Bird - Bird contact
     if ([spriteA isKindOfClass:[Bird class]] &&
         [spriteB isKindOfClass:[Bird class]]) {
         
         Bird *birdA = (Bird*)spriteA;
         Bird *birdB = (Bird*)spriteB;
-        birdA.color = ccMAGENTA;
-        birdB.color = ccMAGENTA;
+        
+        // Same type -> love making
+        if ([spriteA isKindOfClass:[spriteB class]]) {
+            birdA.color = ccRED;
+            birdB.color = ccRED;
+        // Different types -> battle
+        } else {
+            birdA.color = ccBLACK;
+            birdB.color = ccBLACK;
+        }
     }
 }
 
