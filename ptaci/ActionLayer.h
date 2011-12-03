@@ -37,6 +37,8 @@
     CGSize winSize;
     HUDLayer *_hud;
     int _score;
+	
+	GLESDebugDraw *debugDraw;
 }
 
 @property (nonatomic, retain) CCSprite *bear;

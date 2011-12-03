@@ -30,7 +30,7 @@
 
 - (id)initWithHUD:(HUDLayer *)hud
 {
-	if( (self=[super initWithColor:ccc4(0,0,255,255)])) {
+	if((self=[super initWithColor:ccc4(0,0,255,255)])) {
         
         // save reference to hud layer
         _hud = hud;
@@ -55,7 +55,19 @@
 //        int32 velocityIterations = 10;
 //        int32 positionIterations = 8;
 //        _world->Step(timeStep, velocityIterations, positionIterations);
-        
+		
+		// Debug Draw functions
+		debugDraw = new GLESDebugDraw([[CCDirector sharedDirector] contentScaleFactor] * PTM_RATIO); 
+		_world->SetDebugDraw(debugDraw);
+		
+		uint32 flags = 0;
+		flags |= b2DebugDraw::e_shapeBit;
+		flags |= b2DebugDraw::e_jointBit;
+		// flags |= b2DebugDraw::e_aabbBit;
+		// flags |= b2DebugDraw::e_pairBit;
+		// flags |= b2DebugDraw::e_centerOfMassBit; 
+		debugDraw->SetFlags(flags);
+		
         // Create edges around the entire screen
         b2BodyDef groundBodyDef;
         groundBodyDef.position.Set(0,0);
@@ -90,8 +102,8 @@
         
         // Create birds contact listener
         _birdsContactListener = new BirdsContactListener();
-        _world->SetContactListener(_birdsContactListener);
-
+        _world->SetContactListener(_birdsContactListener);		
+		
 		// create rope
 		[self createRope];
         
@@ -369,5 +381,12 @@
     
 	// don't forget to call "super dealloc"
 	[super dealloc];
+}
+
+- (void)draw {
+	glEnableClientState(GL_VERTEX_ARRAY);
+	_world->DrawDebugData();
+	// restore default GL states 
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 @end
