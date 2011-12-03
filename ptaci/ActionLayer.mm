@@ -31,7 +31,7 @@
     
     uint32 flags = 0;
     flags += b2DebugDraw::e_shapeBit;
-    //		flags += b2DebugDraw::e_jointBit;
+    flags += b2DebugDraw::e_jointBit;
     //		flags += b2DebugDraw::e_aabbBit;
     //		flags += b2DebugDraw::e_pairBit;
     //		flags += b2DebugDraw::e_centerOfMassBit;
@@ -159,14 +159,16 @@
 
 - (void)createRope {
     
-	static float segmentWidth = 15.0f;
-	static float segmentHeight = 3.0f;
+	static float segmentWidth = 100.0f;
+	static float segmentHeight = 10.0f;
 	
 	NSLog(@"sirka sveta %f", worldWidth);
+	NSLog(@"segment size %f %f", segmentWidth, segmentHeight);
+	NSLog(@"pocet potrebnych segmentu %f", worldWidth/segmentWidth);
 	
     b2PolygonShape shape;
-    shape.SetAsBox(segmentWidth/PTM_RATIO, segmentHeight/PTM_RATIO);
-
+    shape.SetAsBox(segmentWidth/PTM_RATIO/2, segmentHeight/PTM_RATIO/2);
+	
     b2FixtureDef fd;
     fd.shape = &shape;
     fd.density = 20.0f;
@@ -175,32 +177,42 @@
 	b2BodyDef fixDef;
 	fixDef.type = b2_staticBody;
 	fixDef.position.Set(0/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
-	
+
 	b2Body *leftFix = _world->CreateBody(&fixDef);
-	leftFix->CreateFixture(&fd);
 
     b2RevoluteJointDef jd;
     jd.collideConnected = false;
 	
     b2Body* prevBody = leftFix;
-    for (int32 i = 0; i < 25; ++i)
+    for (int32 i = 0; i < (worldWidth/segmentWidth); ++i)
     {
+		
 		fixDef.type = b2_dynamicBody;
-        fixDef.position.Set(i + segmentWidth/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
+        fixDef.position.Set((i * segmentWidth)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
         b2Body* body = _world->CreateBody(&fixDef);
         body->CreateFixture(&fd);
         
-        b2Vec2 anchor(i, ROPE_HEIGHT/PTM_RATIO);
-        jd.Initialize(prevBody, body, anchor);
-        _world->CreateJoint(&jd);
+		if (i == 0) {
+			b2Vec2 anchor(0, ROPE_HEIGHT/PTM_RATIO);
+			jd.Initialize(prevBody, body, anchor);
+			_world->CreateJoint(&jd);
+		}
+		else {
+			b2Vec2 anchor(((i * segmentWidth) - segmentWidth/2)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
+			jd.Initialize(prevBody, body, anchor);
+			_world->CreateJoint(&jd);
+		}
+        
+//		NSLog(@"anchor point %d %d", i * PTM_RATIO, ROPE_HEIGHT);
+        
         
         prevBody = body;
     }
 	
+
 	fixDef.position.Set(worldWidth/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
 	fixDef.type = b2_staticBody;
 	b2Body *rightFix = _world->CreateBody(&fixDef);
-	rightFix->CreateFixture(&fd);
 	
 	b2Vec2 anchor(worldWidth/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
 	jd.Initialize(prevBody, rightFix, anchor);
