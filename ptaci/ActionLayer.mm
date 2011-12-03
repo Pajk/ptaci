@@ -8,6 +8,7 @@
 
 #import "ActionLayer.h"
 #import "Bird.h"
+#import <list>
 
 #define PTM_RATIO 32
 #define ROPE_HEIGHT 100
@@ -16,6 +17,14 @@
 @implementation ActionLayer
 
 @synthesize score = _score;
+
+//#ifdef BOX2D_H
+//#define inMeters(number) (number / PTM_RATIO)
+//#define inPixels(number) (number * PTM_RATIO)
+
+//#define pointToMeters(point) b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO)
+//#define pointToPixels(vec) ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO)
+//#endif
 
 - (b2Vec2)toMeters:(CGPoint)point {
     return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);
@@ -42,7 +51,6 @@
     glDisable(GL_TEXTURE_2D);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    
     
 	// Draws the Box2d Data in RetinaDisplay
 	glPushMatrix();
@@ -93,7 +101,6 @@
         // create rope
 		[self createRope];
 
-		
         // Create edges around the entire screen
         b2BodyDef groundBodyDef;
         groundBodyDef.position.Set(0,0);
@@ -140,6 +147,7 @@
 }
 
 - (void)tick:(ccTime) delta {
+    
     // Advance the physics world by one step, using fixed time steps
     float timeStep = 0.03f;
     int32 velocityIterations = 8;
@@ -147,13 +155,77 @@
     _world->Step(timeStep, velocityIterations, positionIterations);
     
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {   
-
 //        SPRITES
 //        Bird *sprite = (Bird *)b->GetUserData();
 //        if (sprite != NULL) {
 //            sprite.position = [self toPixels:b->GetPosition()];
 //            sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
 //        }        
+    }
+    
+    std::vector<b2Body *>toBattle; 
+    std::vector<b2Body *>toLove;
+    std::vector<BirdsContact>::iterator pos;
+    std::list<b2Body *>toDestroy;
+    for(pos = _birdsContactListener->_contacts.begin(); 
+        pos != _birdsContactListener->_contacts.end(); ++pos) {
+        BirdsContact contact = *pos;
+        
+        b2Body *bodyA = contact.fixtureA->GetBody();
+        b2Body *bodyB = contact.fixtureB->GetBody();
+        if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
+            CCSprite *spriteA = (CCSprite *) bodyA->GetUserData();
+            CCSprite *spriteB = (CCSprite *) bodyB->GetUserData();
+            
+            if (spriteA && spriteB) {
+            // Bird - Bird contact
+                if ([spriteA isKindOfClass:[Bird class]] &&
+                    [spriteB isKindOfClass:[Bird class]]) {
+                    
+    //                Bird *birdA = (Bird*)spriteA;
+    //                Bird *birdB = (Bird*)spriteB;
+                    
+                    // Same type -> love making
+                    if ([spriteA isKindOfClass:[spriteB class]]) {
+                        self.score++;
+                        toDestroy.push_back(bodyA);
+//                        toLove.push_back(bodyA);
+//                        toLove.push_back(bodyB);
+    //                    birdA.color = ccRED;
+    //                    birdB.color = ccRED;
+                    // Different types -> battle
+                    } else {
+                        self.score--;
+                        toDestroy.push_back(bodyA);
+//                        toBattle.push_back(bodyA);
+//                        toBattle.push_back(bodyB);
+    //                    birdA.color = ccBLACK;
+    //                    birdB.color = ccBLACK;
+                    }
+                    [self updateScore];
+                }
+            }
+        }        
+    }
+    toDestroy.unique();
+    std::list<b2Body *>::iterator pos2;
+    for(pos2 = toDestroy.begin(); pos2 != toDestroy.end(); ++pos2) {
+        b2Body *body = *pos2;     
+        if (body && body->GetUserData() != NULL) {
+            CCSprite *sprite = (CCSprite *) body->GetUserData();
+            if (sprite) {
+                [self removeChild:sprite cleanup:YES];
+            }
+        }
+        
+        for (b2JointEdge* jointEdge = body->GetJointList(); jointEdge != NULL; jointEdge = jointEdge->next)
+        {
+            b2Joint* targetJoint = jointEdge->joint;
+            if (_mouseJoint == targetJoint) {
+                _mouseJoint = NULL;
+            } 
+        }
+        _world->DestroyBody(body);
     }
 }
 
@@ -241,7 +313,7 @@
     // and along a random position along the Y axis as calculated above
     bird.position = ccp(actualX, winSize.height + (bird.contentSize.height/2));
 //    SPRITES
-//    [self addChild:bird];
+    [self addChild:bird];
     
     // Create bird body 
     b2BodyDef birdBodyDef;
@@ -253,12 +325,12 @@
     b2Body *birdBody = _world->CreateBody(&birdBodyDef);
     
     // Create box shape and assing it to the bird fixture
-    b2PolygonShape shape;
-    shape.SetAsBox((bird.contentSize.width-10)/PTM_RATIO/2, (bird.contentSize.height-10)/PTM_RATIO/2);
+    b2PolygonShape birdShape;
+    birdShape.SetAsBox((bird.contentSize.width-10)/PTM_RATIO/2, (bird.contentSize.height-10)/PTM_RATIO/2);
     
     // Create shape definition and add to body
     b2FixtureDef birdShapeDef;
-    birdShapeDef.shape = &shape;
+    birdShapeDef.shape = &birdShape;
     birdShapeDef.density = 0.8f;
     birdShapeDef.friction = 1.0f;
     birdShapeDef.restitution = 0.1f;

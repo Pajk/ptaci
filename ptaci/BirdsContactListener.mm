@@ -7,12 +7,39 @@
 //
 
 #import "BirdsContactListener.h"
-
 #import "cocos2d.h" 
 #import "Bird.h"
 
-void BirdsContactListener::BeginContact(b2Contact* contact)
-{
+BirdsContactListener::BirdsContactListener() : _contacts() {
+}
+
+BirdsContactListener::~BirdsContactListener() {
+}
+
+void BirdsContactListener::BeginContact(b2Contact* contact) {
+    // We need to copy out the data because the b2Contact passed in is reused.
+    BirdsContact birdContact = { contact->GetFixtureA(), contact->GetFixtureB() };
+    _contacts.push_back(birdContact);
+}
+
+void BirdsContactListener::EndContact(b2Contact* contact) {
+    BirdsContact birdContact = { contact->GetFixtureA(), contact->GetFixtureB() };
+    std::vector<BirdsContact>::iterator pos;
+    pos = std::find(_contacts.begin(), _contacts.end(), birdContact);
+    if (pos != _contacts.end()) {
+        _contacts.erase(pos);
+    }
+}
+
+void BirdsContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {
+}
+
+void BirdsContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
+}
+
+//
+//void BirdsContactListener::BeginContact(b2Contact* contact)
+//{
 //    b2Body* bodyA = contact->GetFixtureA()->GetBody();
 //    b2Body* bodyB = contact->GetFixtureB()->GetBody();
 //    
@@ -28,6 +55,7 @@ void BirdsContactListener::BeginContact(b2Contact* contact)
 //        
 //        // Same type -> love making
 //        if ([spriteA isKindOfClass:[spriteB class]]) {
+//            [this->layer updateScore];
 //            birdA.color = ccRED;
 //            birdB.color = ccRED;
 //        // Different types -> battle
@@ -36,10 +64,10 @@ void BirdsContactListener::BeginContact(b2Contact* contact)
 //            birdB.color = ccBLACK;
 //        }
 //    }
-}
-
-void BirdsContactListener::EndContact(b2Contact* contact)
-{
+//}
+//
+//void BirdsContactListener::EndContact(b2Contact* contact)
+//{
 //    b2Body* bodyA = contact->GetFixtureA()->GetBody();
 //    b2Body* bodyB = contact->GetFixtureB()->GetBody();
 //    CCSprite* spriteA = (CCSprite*)bodyA->GetUserData();
@@ -49,4 +77,4 @@ void BirdsContactListener::EndContact(b2Contact* contact)
 //        spriteA.color = ccWHITE;
 //        spriteB.color = ccWHITE;
 //    }
-}
+//}
