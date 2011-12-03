@@ -91,6 +91,9 @@
         // Create birds contact listener
         _birdsContactListener = new BirdsContactListener();
         _world->SetContactListener(_birdsContactListener);
+
+		// create rope
+		[self createRope];
         
         // turn on bird spawning
         [self schedule:@selector(gameLogic:) interval:1.0];
@@ -119,6 +122,103 @@
             sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
         }        
     }
+}
+
+- (void)createRope {
+	
+	// left fitting
+	CCSprite *leftFitSprite = [CCSprite spriteWithFile:@"fitting.png"];
+	leftFitSprite.position = ccp(0, ROPE_HEIGHT);
+	[self addChild:leftFitSprite];
+	
+	b2CircleShape leftFitShape;
+	leftFitShape.m_radius = 10.0f/PTM_RATIO;
+	b2FixtureDef leftFitFixture;
+	leftFitFixture.shape = &leftFitShape;
+	b2BodyDef leftFitBodyDef;
+	leftFitBodyDef.position.Set(leftFitSprite.position.x/PTM_RATIO, leftFitSprite.position.y/PTM_RATIO);
+	b2Body *leftFitBody = _world->CreateBody(&leftFitBodyDef);
+	leftFitBody->CreateFixture(&leftFitFixture);
+	
+	// right fittng
+	CCSprite *rightFitSprite = [CCSprite spriteWithFile:@"fitting.png"];
+	rightFitSprite.position = ccp(background.contentSize.width, ROPE_HEIGHT);
+	[self addChild:rightFitSprite];
+	
+	b2CircleShape rightFitShape;
+	rightFitShape.m_radius = 10.0f/PTM_RATIO;
+	b2FixtureDef rightFitFixture;
+	rightFitFixture.shape = &rightFitShape;
+	b2BodyDef rightFitBodyDef;
+	rightFitBodyDef.position.Set(rightFitSprite.position.x/PTM_RATIO, rightFitSprite.position.y/PTM_RATIO);
+	b2Body *rightFitBody = _world->CreateBody(&rightFitBodyDef);
+	rightFitBody->CreateFixture(&rightFitFixture);
+	
+	// rope
+	b2PolygonShape ropeShape;
+	ropeShape.SetAsBox(50.0f/PTM_RATIO, 10.0f/PTM_RATIO);
+	b2FixtureDef ropeFixture;
+	ropeFixture.density = 1.0f;
+	ropeFixture.shape = &ropeShape;
+	b2BodyDef ropeBodyDef;
+	ropeBodyDef.linearDamping = 0.2;
+	ropeBodyDef.angularDamping = 0.2;
+//	b2MassData ropeMass;
+//	ropeMass.mass = 1;
+//	ropeMass.I = 100;
+	
+	ropeBodyDef.position.Set(0, ROPE_HEIGHT/PTM_RATIO);
+	b2Body *ropeBody = _world->CreateBody(&ropeBodyDef);
+//	ropeBody->SetMassData(&ropeMass);
+	ropeBody->CreateFixture(&ropeFixture);
+	
+	ropeBodyDef.position.Set(50.0f/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
+	ropeBody = _world->CreateBody(&ropeBodyDef);
+	//	ropeBody->SetMassData(&ropeMass);
+	ropeBody->CreateFixture(&ropeFixture);
+	
+	b2Body *ropeStart = leftFitBody;
+	
+	b2DistanceJointDef jointDef;
+	b2DistanceJoint* joint;
+	float dX = rightFitBody->GetPosition().x*PTM_RATIO;
+	NSLog(@"width = %f", dX);
+	int numSections = ceil(dX/50.0f);
+	int segWidth = dX/numSections;
+	NSLog(@"number of sections %d", numSections);
+	
+	for (int i=0; i<numSections; i++) {
+		
+		CCSprite *segmentSprite = [CCSprite spriteWithFile:@"segment.png"];
+		segmentSprite.position = ccp((i*segWidth), ROPE_HEIGHT);
+		[self addChild:segmentSprite];
+		
+		NSLog(@"add segment at %d %d", (i*segWidth), ROPE_HEIGHT);
+			
+		// mass data
+//		b2MassData massData;
+//		massData.mass = 0.8+0.8*i/numSections;
+		
+		ropeBodyDef.position.Set((i*segWidth)/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
+//		ropeBody = _world->CreateBody(&ropeBodyDef);
+//		ropeBody->SetMassData(&massData);
+		ropeBody->CreateFixture(&ropeFixture);
+		
+//		jointDef.Initialize(ropeStart, ropeBody, ropeStart->GetPosition(),ropeBody->GetPosition());
+//		joint = (b2DistanceJoint*) _world->CreateJoint(&jointDef);
+//		joint->SetLength(segWidth);
+
+		ropeStart = ropeBody;
+	}
+	
+	CCSprite *segmentSprite = [CCSprite spriteWithFile:@"segment.png"];
+	segmentSprite.position = ccp((numSections*segWidth), ROPE_HEIGHT);
+	[self addChild:segmentSprite];
+
+	// last joint
+//	jointDef.Initialize(ropeBody, rightFitBody, ropeBody->GetPosition(), rightFitBody->GetPosition());
+//	joint = (b2DistanceJoint *)_world->CreateJoint(&jointDef);
+//	joint->SetLength(segWidth);
 }
 
 -(void)addBird {

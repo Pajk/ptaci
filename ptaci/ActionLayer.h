@@ -27,6 +27,8 @@
     b2Fixture *_bottomFixture;
     
     b2MouseJoint *_mouseJoint;
+	
+	b2Body* boxBody;
     
     CCSprite *background;
     
@@ -44,6 +46,7 @@
 
 - (id)initWithHUD:(HUDLayer *)hud;
 - (void)updateScore;
+- (void)createRope;
 
 @end
 
