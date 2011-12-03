@@ -24,12 +24,14 @@
     b2Body *_groundBody;
     
     b2Fixture *_bottomFixture;
-    b2Fixture *_birdFixture;
+    
+    b2MouseJoint *_mouseJoint;
     
     CCSprite *background;
     Bird *selSprite;
     NSMutableArray *movableSprites;
-    
+ 
+    CGSize winSize;
     HUDLayer *_hud;
     int _score;
 }
