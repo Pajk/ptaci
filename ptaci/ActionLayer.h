@@ -28,9 +28,7 @@
     b2MouseJoint *_mouseJoint;
     
     CCSprite *background;
-    Bird *selSprite;
-    NSMutableArray *movableSprites;
- 
+    
     CGSize winSize;
     HUDLayer *_hud;
     int _score;

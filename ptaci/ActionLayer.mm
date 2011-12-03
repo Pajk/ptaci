@@ -11,7 +11,7 @@
 
 #define PTM_RATIO 32
 #define ROPE_HEIGHT 100
-#define BIRDS_LIMIT 10
+#define BIRDS_LIMIT 40
 
 @implementation ActionLayer
 
@@ -52,32 +52,37 @@
         b2BodyDef groundBodyDef;
         groundBodyDef.position.Set(0,0);
         _groundBody = _world->CreateBody(&groundBodyDef);
+        
         b2PolygonShape groundBox;
         b2FixtureDef groundBoxDef;
         groundBoxDef.shape = &groundBox;
         
-        CGFloat width = background.contentSize.width/PTM_RATIO;
-        // bottom edge
-        groundBox.SetAsEdge(b2Vec2(0,ROPE_HEIGHT/PTM_RATIO), b2Vec2(width, ROPE_HEIGHT/PTM_RATIO));
+        float widthInMeters = background.contentSize.width / PTM_RATIO;
+        float heightInMeters = (winSize.height + 200) / PTM_RATIO; 
+        b2Vec2 lowerLeftCorner = b2Vec2(0, 0);
+        b2Vec2 lowerRightCorner = b2Vec2(widthInMeters, 0); 
+        b2Vec2 upperLeftCorner = b2Vec2(0, heightInMeters);
+        b2Vec2 upperRightCorner = b2Vec2(widthInMeters, heightInMeters);
+        
+        // Bottom
+        groundBox.SetAsEdge(lowerLeftCorner, lowerRightCorner);
         _bottomFixture = _groundBody->CreateFixture(&groundBoxDef);
         
-        // left edge
-        groundBox.SetAsEdge(b2Vec2(0,0), b2Vec2(0, winSize.height/PTM_RATIO));
+        // Top
+        groundBox.SetAsEdge(upperLeftCorner, upperRightCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
-        // upper edge
-        groundBox.SetAsEdge(b2Vec2(0, (winSize.height+200)/PTM_RATIO), b2Vec2(winSize.width/PTM_RATIO, (winSize.height+200)/PTM_RATIO));
+        // Left
+        groundBox.SetAsEdge(upperLeftCorner, lowerLeftCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
-        // right edge
-        groundBox.SetAsEdge(b2Vec2(width, winSize.height/PTM_RATIO), b2Vec2(width, 0));
+        // Right
+        groundBox.SetAsEdge(upperRightCorner, lowerRightCorner);
         _groundBody->CreateFixture(&groundBoxDef);
         
         // turn on bird spawning
         [self schedule:@selector(gameLogic:) interval:1.0];
         [self schedule:@selector(tick:)];
-        
-        movableSprites = [[NSMutableArray alloc] init];
         
         [self registerWithTouchDispatcher];
 	}
@@ -121,7 +126,7 @@
     birdBodyDef.position.Set(bird.position.x/PTM_RATIO, bird.position.y/PTM_RATIO);
     birdBodyDef.userData = bird;
     birdBodyDef.allowSleep = true;
-//    birdBodyDef.fixedRotation = true;
+    birdBodyDef.fixedRotation = true;
     b2Body *birdBody = _world->CreateBody(&birdBodyDef);
     
     // Create circle shape
@@ -135,7 +140,6 @@
     ballShapeDef.friction = 1.0f;
     ballShapeDef.restitution = 0.1f;
     birdBody->CreateFixture(&ballShapeDef);
-    //    [self letBirdFall:bird];
 }
 
 -(void)gameLogic:(ccTime)dt {
@@ -147,32 +151,14 @@
     [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
 }
 
-- (void)selectSpriteForTouch:(CGPoint)touchLocation {
-    Bird *newSprite = nil;
-    for (Bird *sprite in movableSprites) {
-        if (CGRectContainsPoint(sprite.boundingBox, touchLocation)) {            
-            newSprite = sprite;
-            NSLog(@"selected bird");
-            break;
-        }
-    }    
-    if (newSprite != selSprite) {
-        
-        CCRotateTo * rotLeft = [CCRotateBy actionWithDuration:0.1 angle:-4.0];
-        CCRotateTo * rotCenter = [CCRotateBy actionWithDuration:0.1 angle:0.0];
-        CCRotateTo * rotRight = [CCRotateBy actionWithDuration:0.1 angle:4.0];
-        CCSequence * rotSeq = [CCSequence actions:rotLeft, rotCenter, rotRight, rotCenter, nil];
-        [newSprite runAction:[CCRepeatForever actionWithAction:rotSeq]];            
-        selSprite = newSprite;
-    }
-}
-
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     
     if (_mouseJoint != NULL) return FALSE;
     CGPoint location = [self convertTouchToNodeSpace:touch];
     b2Vec2 locationWorld = b2Vec2(location.x/PTM_RATIO, location.y/PTM_RATIO);
     
+    // itereate all bodies in our world and all their fixtures
+    // and check if touch location match with their position
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
         for(b2Fixture *f = b->GetFixtureList(); f; f=f->GetNext()) {
             if (f->TestPoint(locationWorld)) {
@@ -252,9 +238,6 @@
 	// cocos2d will automatically release all the children (Label)
     self.bear = nil;
     self.walkAction = nil;
-    
-    [movableSprites release];
-    movableSprites = nil;
     
     delete _world;
     _groundBody = NULL;
