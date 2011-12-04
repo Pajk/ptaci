@@ -6,15 +6,23 @@
 //  Copyright __MyCompanyName__ 2011. All rights reserved.
 //
 
-#import "cocos2d.h"
-
 #import "AppDelegate.h"
-#import "GameConfig.h"
-#import "GameScene.h"
-#import "RootViewController.h"
+#import "cocos2d.h"
+#import "LoadingScene.h"
+#import "CDAudioManager.h"
+#import "MainMenuScene.h"
+#import "StoryScene.h"
+#import "ActionScene.h"
+#import "GameState.h"
+#import "Level.h"
+#import "GameSoundManager.h"
 
 @implementation AppDelegate
 
+@synthesize loadingScene = _loadingScene;
+@synthesize mainMenuScene = _mainMenuScene;
+@synthesize storyScene = _storyScene;
+@synthesize actionScene = _actionScene;
 @synthesize window;
 
 - (void) removeStartupFlicker
@@ -41,6 +49,9 @@
 
 - (void) applicationDidFinishLaunching:(UIApplication*)application
 {
+    // Sound initialization
+	[[GameSoundManager sharedManager] setup];
+    
 	// Init the window
 	window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
@@ -49,12 +60,7 @@
 	if( ! [CCDirector setDirectorType:kCCDirectorTypeDisplayLink] )
 		[CCDirector setDirectorType:kCCDirectorTypeDefault];
 	
-	
 	CCDirector *director = [CCDirector sharedDirector];
-	
-	// Init the View Controller
-	viewController = [[RootViewController alloc] initWithNibName:nil bundle:nil];
-	viewController.wantsFullScreenLayout = YES;
 	
 	//
 	// Create the EAGLView manually
@@ -74,47 +80,74 @@
 //	if( ! [director enableRetinaDisplay:YES] )
 //		CCLOG(@"Retina Display Not supported");
 	
-	//
-	// VERY IMPORTANT:
-	// If the rotation is going to be controlled by a UIViewController
-	// then the device orientation should be "Portrait".
-	//
-	// IMPORTANT:
-	// By default, this template only supports Landscape orientations.
-	// Edit the RootViewController.m file to edit the supported orientations.
-	//
-#if GAME_AUTOROTATION == kGameAutorotationUIViewController
-	[director setDeviceOrientation:kCCDeviceOrientationPortrait];
-#else
+	// Set landscape mode
 	[director setDeviceOrientation:kCCDeviceOrientationLandscapeLeft];
-#endif
 	
+    // FPS
 	[director setAnimationInterval:1.0/60];
+    
+    // Show FPS on screen
 	[director setDisplayFPS:YES];
 	
+	// Make the OpenGLView a child of the view controller
+	[director setOpenGLView:glView];
 	
-	// make the OpenGLView a child of the view controller
-	[viewController setView:glView];
+	// Make the glview a child of the main window
+	[window addSubview:glView];
 	
-	// make the View Controller a child of the main window
-	[window addSubview: viewController.view];
-	
+    // Make the window visible
 	[window makeKeyAndVisible];
 	
 	// Default texture format for PNG/BMP/TIFF/JPEG/GIF images
 	// It can be RGBA8888, RGBA4444, RGB5_A1, RGB565
 	// You can change anytime.
+    // Default: kCCTexture2DPixelFormat_RGBA8888
 	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];
-
 	
 	// Removes the startup flicker
 	[self removeStartupFlicker];
 	
-	// Run the intro Scene
-	// [[CCDirector sharedDirector] runWithScene: [HelloWorldLayer scene]];
-    [[CCDirector sharedDirector] runWithScene: [GameScene node]];
+    // Alocate and run the loading scene
+    self.loadingScene = [[[LoadingScene alloc] init] autorelease];		
+	[director runWithScene: _loadingScene];
 }
 
+
+- (void)loadScenes {
+    
+    // Create a shared opengl context so any textures can be shared with the main content
+    EAGLContext *k_context = [[[EAGLContext alloc]
+                               initWithAPI:kEAGLRenderingAPIOpenGLES1
+                               sharegroup:[[[[CCDirector sharedDirector] openGLView] context] sharegroup]] autorelease];    
+    [EAGLContext setCurrentContext:k_context];
+    
+    self.mainMenuScene = [[[MainMenuScene alloc] init] autorelease];
+    self.storyScene = [[[StoryScene alloc] init] autorelease];
+    self.actionScene = [[[ActionScene alloc] init] autorelease];
+}
+
+- (void)launchMainMenu {
+    [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:_mainMenuScene]];
+}
+
+- (void)launchCurLevel {
+    Level *curLevel = [[GameState sharedState] curLevel];
+    if ([curLevel isKindOfClass:[StoryLevel class]]) {
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:_storyScene]];
+    } else if ([curLevel isKindOfClass:[ActionLevel class]]) {
+        [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:_actionScene]];
+    }
+}
+
+- (void)launchNextLevel {
+    [[GameState sharedState] nextLevel];
+    [self launchCurLevel];
+}
+
+- (void)launchNewGame { 
+    [[GameState sharedState] reset];
+    [self launchCurLevel];    
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 	[[CCDirector sharedDirector] pause];
@@ -141,8 +174,6 @@
 	
 	[[director openGLView] removeFromSuperview];
 	
-	[viewController release];
-	
 	[window release];
 	
 	[director end];	
@@ -153,6 +184,10 @@
 }
 
 - (void)dealloc {
+    self.loadingScene = nil;
+    self.mainMenuScene = nil;
+    self.storyScene = nil;
+    self.actionScene = nil;
 	[[CCDirector sharedDirector] end];
 	[window release];
 	[super dealloc];

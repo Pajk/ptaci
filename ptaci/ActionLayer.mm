@@ -231,7 +231,7 @@
 
 - (void)createRope {
     
-	static float segmentWidth = 80.0f;
+	static float segmentWidth = 10.0f;
 	static float segmentHeight = 10.0f;
 	
 	NSLog(@"sirka sveta %f", worldWidth);
@@ -254,6 +254,12 @@
 
     b2RevoluteJointDef jd;
     jd.collideConnected = false;
+    jd.lowerAngle = -0.5f * b2_pi; // -90 degrees
+    jd.upperAngle = 0.25f * b2_pi; // 45 degrees
+    jd.enableLimit = true;
+    jd.maxMotorTorque = 10.0f;
+    jd.motorSpeed = 0.0f;
+    jd.enableMotor = true;
 	
     b2Body* prevBody = leftFix;
     for (int32 i = 0; i < (worldWidth/segmentWidth)-1; ++i)
@@ -274,9 +280,7 @@
 			jd.Initialize(prevBody, body, anchor);
 			_world->CreateJoint(&jd);
 		}
-        
 //		NSLog(@"anchor point %d %d", i * PTM_RATIO, ROPE_HEIGHT);
-        
         
         prevBody = body;
     }
@@ -299,9 +303,9 @@
     
     Bird *bird = nil;
     if (arc4random()%(unsigned)2) {
-        bird = [HeavyAndSlowBird bird];
+        bird = [Bird birdWithType:BirdTypeFast];
     } else {
-        bird = [LightweightAndFastBird bird];
+        bird = [Bird birdWithType:BirdTypeSlow];
     }
     // Determine where to spawn the bird along the X axis
     int minX = bird.contentSize.width/2;
@@ -312,7 +316,6 @@
     // Create the bird slightly off-screen along the right edge,
     // and along a random position along the Y axis as calculated above
     bird.position = ccp(actualX, winSize.height + (bird.contentSize.height/2));
-//    SPRITES
     [self addChild:bird];
     
     // Create bird body 

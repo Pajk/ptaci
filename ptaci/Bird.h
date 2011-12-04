@@ -8,24 +8,25 @@
 
 #import "cocos2d.h"
 
+typedef enum {
+    BirdTypeSlow,
+    BirdTypeFast
+} BirdType;
+
 @interface Bird : CCSprite {
+    BirdType _birdType;
     int _minMoveDuration;
     int _maxMoveDuration;
-    int _weight;
+    float _weight;
+    int _loveEffectSoundId;
 }
 
-@property (nonatomic, assign) int weight;
+@property (nonatomic, assign) BirdType birdType;
+@property (nonatomic, assign) float weight;
 @property (nonatomic, assign) int minMoveDuration;
 @property (nonatomic, assign) int maxMoveDuration;
+@property (nonatomic, assign) int loveEffectSoundId;
 
-@end
++ (Bird *)birdWithType:(BirdType)birdType;
 
-@interface LightweightAndFastBird : Bird {
-}
-+(id)bird;
-@end
-
-@interface HeavyAndSlowBird : Bird {
-}
-+(id)bird;
 @end
