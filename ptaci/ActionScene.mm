@@ -136,7 +136,10 @@ SimpleAudioEngine *soundEngine;
         
         // Create birds contact listener
         _contactListener = new BirdsContactListener();
-        _world->SetContactListener(_contactListener);		
+        _world->SetContactListener(_contactListener);
+		
+        // Create rope
+        [self createRope];
     }
     return self;
 }
@@ -160,9 +163,6 @@ SimpleAudioEngine *soundEngine;
     [self schedule:@selector(update:)];
     [self schedule:@selector(gameLogic:) interval:0.1f];
     
-    // Create rope
-    [self createRope];
-    
     // Register touch events
     [self registerWithTouchDispatcher];
     
@@ -173,6 +173,8 @@ SimpleAudioEngine *soundEngine;
 
 - (void)update:(ccTime)dt {
     
+    if (!_inLevel) return;
+    
     // Advance the physics world by one step, using fixed time steps
     float timeStep = 0.03f;
     int32 velocityIterations = 8;
@@ -180,7 +182,7 @@ SimpleAudioEngine *soundEngine;
     _world->Step(timeStep, velocityIterations, positionIterations);
     
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {   
-        Bird *sprite = (Bird *)b->GetUserData();
+        CCSprite *sprite = (CCSprite *)b->GetUserData();
         if (sprite != NULL) {
             sprite.position = [self toPixels:b->GetPosition()];
             sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
@@ -188,66 +190,66 @@ SimpleAudioEngine *soundEngine;
     }
     
 //    MY NEW GREAT METHOD (DOESNT WORK)
-//    std::vector<b2Body *>toBattle; 
-//    std::vector<b2Body *>toLove;
-//    std::vector<BirdsContact>::iterator pos;
-//    std::list<b2Body *>toDestroy;
-//    for(pos = _contactListener->_contacts.begin(); 
-//        pos != _contactListener->_contacts.end(); ++pos) {
-//        BirdsContact contact = *pos;
-//        
-//        b2Body *bodyA = contact.fixtureA->GetBody();
-//        b2Body *bodyB = contact.fixtureB->GetBody();
-//        if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
-//            CCSprite *spriteA = (CCSprite *) bodyA->GetUserData();
-//            CCSprite *spriteB = (CCSprite *) bodyB->GetUserData();
-//            
-//            if (spriteA && spriteB) {
-//                // Bird - Bird contact
-//                if ([spriteA isKindOfClass:[Bird class]] &&
-//                    [spriteB isKindOfClass:[Bird class]]) {
-//                    
-//                    Bird *birdA = (Bird*)spriteA;
-//                    Bird *birdB = (Bird*)spriteB;
-//                    
-//                    // Same type -> love making
-//                    if ([birdA birdType] == [birdB birdType]) {
-//                        self.score++;
-//                        toDestroy.push_back(bodyA);
-//                        //                        toLove.push_back(bodyA);
-//                        //                        toLove.push_back(bodyB);
-//                    // Different types -> battle
-//                    } else {
-//                        self.score--;
-//                        toDestroy.push_back(bodyA);
-//                        //                        toBattle.push_back(bodyA);
-//                        //                        toBattle.push_back(bodyB);
-//                    }
-////                    [self updateScore];
-//                }
-//            }
-//        }        
-//    }
-//    toDestroy.unique();
-//    std::list<b2Body *>::iterator pos2;
-//    for(pos2 = toDestroy.begin(); pos2 != toDestroy.end(); ++pos2) {
-//        b2Body *body = *pos2;     
-//        if (body && body->GetUserData() != NULL) {
-//            CCSprite *sprite = (CCSprite *) body->GetUserData();
-//            if (sprite) {
-//                [self removeChild:sprite cleanup:YES];
-//            }
-//        }
-//        
-//        for (b2JointEdge* jointEdge = body->GetJointList(); jointEdge != NULL; jointEdge = jointEdge->next)
-//        {
-//            b2Joint* targetJoint = jointEdge->joint;
-//            if (_mouseJoint == targetJoint) {
-//                _mouseJoint = NULL;
-//            } 
-//        }
-//        _world->DestroyBody(body);
-//    }
+    std::vector<b2Body *>toBattle; 
+    std::vector<b2Body *>toLove;
+    std::vector<BirdsContact>::iterator pos;
+    std::list<b2Body *>toDestroy;
+    for(pos = _contactListener->_contacts.begin(); 
+        pos != _contactListener->_contacts.end(); ++pos) {
+        BirdsContact contact = *pos;
+        
+        b2Body *bodyA = contact.fixtureA->GetBody();
+        b2Body *bodyB = contact.fixtureB->GetBody();
+        if (bodyA->GetUserData() != NULL && bodyB->GetUserData() != NULL) {
+            CCSprite *spriteA = (CCSprite *) bodyA->GetUserData();
+            CCSprite *spriteB = (CCSprite *) bodyB->GetUserData();
+            
+            if (spriteA && spriteB) {
+                // Bird - Bird contact
+                if ([spriteA isKindOfClass:[Bird class]] &&
+                    [spriteB isKindOfClass:[Bird class]]) {
+                    
+                    Bird *birdA = (Bird*)spriteA;
+                    Bird *birdB = (Bird*)spriteB;
+                    
+                    // Same type -> love making
+                    NSLog(@"A:%d",[birdA birdType]);
+                    NSLog(@"B:%d",[birdB birdType]);
+                    if ([birdA birdType] == [birdB birdType]) {
+                        self.score++;
+                        [soundEngine playEffect:@"loveEffect.wav" pitch:1.0f pan:0.0f gain:1.0f];
+                    // Different types -> battle
+                    } else {
+                        self.score--;
+                        [soundEngine playEffect:@"battleEffect.wav" pitch:1.0f pan:0.0f gain:1.0f];
+                    }
+                    toDestroy.push_back(bodyA);
+                    toDestroy.push_back(bodyB);
+                    [self updateScore];
+                }
+            }
+        }        
+    }
+    toDestroy.unique();
+    std::list<b2Body *>::iterator pos2;
+    for(pos2 = toDestroy.begin(); pos2 != toDestroy.end(); ++pos2) {
+        b2Body *body = *pos2;     
+        if (body && body->GetUserData() != NULL) {
+            CCSprite *sprite = (CCSprite *) body->GetUserData();
+            if (sprite) {
+                [_batchNode removeChild:sprite cleanup:YES];
+                [_birds removeObject:sprite];
+            }
+        }
+        
+        for (b2JointEdge* jointEdge = body->GetJointList(); jointEdge != NULL; jointEdge = jointEdge->next) {
+            b2Joint* targetJoint = jointEdge->joint;
+            if (_mouseJoint == targetJoint) {
+                _mouseJoint = NULL;
+            } 
+        }
+        _world->DestroyBody(body);
+    }
 
 //    OLD METHOD
 //	NSMutableArray *birdsToDelete = [[NSMutableArray alloc] init];
@@ -256,7 +258,7 @@ SimpleAudioEngine *soundEngine;
 //                                     birdA.position.y - (birdA.contentSize.height/2), 
 //									 birdA.contentSize.width, 
 //									 birdA.contentSize.height);
-//        
+////        
 //        Bird * birdB = nil;
 //		for (Bird *curBird in _birds) {
 //			CGRect birdBRect = CGRectMake(curBird.position.x - (curBird.contentSize.width/2), 
@@ -269,7 +271,7 @@ SimpleAudioEngine *soundEngine;
 //			}						
 //		}
 //        
-//		if (birdB != nil) {            
+//		if (birdB != nil && birdA != birdB) {            
 //
 //            if (birdA.birdType == birdB.birdType) {
 //                [soundEngine playEffect:@"loveEffect.wav" pitch:1.0f pan:0.0f gain:1.0f];
@@ -278,10 +280,10 @@ SimpleAudioEngine *soundEngine;
 //            }
 //            
 //            // Remove the fucking birds
-//            [_birds removeObject:birdA];
-//            [_birds removeObject:birdB];
-//            [_batchNode removeChild:birdA cleanup:YES];									
-//            [_batchNode removeChild:birdB cleanup:YES];
+////            [_birds removeObject:birdA];
+////            [_birds removeObject:birdB];
+////            [_batchNode removeChild:birdA cleanup:YES];									
+////            [_batchNode removeChild:birdB cleanup:YES];
 //            
 //            // Add the projectile to the list to delete
 //			[birdsToDelete addObject:birdA];
@@ -289,10 +291,10 @@ SimpleAudioEngine *soundEngine;
 //		}
 //	}
 //	
-//	for (CCSprite *bird in birdsToDelete) {
-//		[_birds removeObject:bird];
-//		[_batchNode removeChild:bird cleanup:YES];
-//	}
+////	for (CCSprite *bird in birdsToDelete) {
+////		[_birds removeObject:bird];
+////		[_batchNode removeChild:bird cleanup:YES];
+////	}
 //	[birdsToDelete release];
 }
 
@@ -363,9 +365,10 @@ SimpleAudioEngine *soundEngine;
     } else {
         if (now - _levelBegin >= curLevel.spawnSeconds) {
             
-            if (_birds.count == 0) {
+            if (_birds.count < 2) {
                 _inLevel = FALSE;
                 [self fadeOutMusic];
+                [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
                 AppDelegate*delegate = [[UIApplication sharedApplication] delegate];
                 [delegate launchNextLevel];
             } 

@@ -37,8 +37,6 @@
 - (id)init {
     if ((self = [super init])) {
         
-        self.isTouchEnabled = YES;
-        
         // Add a sprite sheet based on the loaded texture and add it to the scene
         self.batchNode = [CCSpriteBatchNode batchNodeWithTexture:[[CCTextureCache sharedTextureCache] addImage:@"sprites.png"]];
         [self addChild:_batchNode];
@@ -93,6 +91,8 @@
     _curStoryIndex = 0;
     [self displayCurStoryString];
     
+    [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
+    
     // Animate "tap to continue"
     [_tapToCont runAction:[CCRepeatForever actionWithAction:
                            [CCSequence actions:
@@ -101,8 +101,7 @@
                             nil]]];
 }
 
-- (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+- (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     _curStoryIndex++;
     StoryLevel *curLevel = (StoryLevel *)[GameState sharedState].curLevel;
     if (_curStoryIndex < curLevel.storyStrings.count) {
@@ -115,6 +114,7 @@
             [delegate launchNextLevel];
         }
     }
+    return TRUE;
 }
 
 @end

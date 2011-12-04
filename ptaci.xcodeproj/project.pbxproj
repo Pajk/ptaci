@@ -155,7 +155,6 @@
 		2E14D3411487CA6D00CBD63C /* b2WeldJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3401487CA6D00CBD63C /* b2WeldJoint.cpp */; };
 		2E14D3471487CA6D00CBD63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3461487CA6D00CBD63C /* main.m */; };
 		2E14D34A1487CA6D00CBD63C /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3491487CA6D00CBD63C /* AppDelegate.mm */; };
-		2E14D34D1487CA6D00CBD63C /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D34C1487CA6D00CBD63C /* RootViewController.m */; };
 		2E14D3531487CA6D00CBD63C /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3521487CA6D00CBD63C /* GLES-Render.mm */; };
 		2E14D3691487CAD600CBD63C /* Bird.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D3631487CAD600CBD63C /* Bird.mm */; };
 		2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */; };
@@ -480,8 +479,6 @@
 		2E14D3461487CA6D00CBD63C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2E14D3481487CA6D00CBD63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2E14D3491487CA6D00CBD63C /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
-		2E14D34B1487CA6D00CBD63C /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
-		2E14D34C1487CA6D00CBD63C /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		2E14D3511487CA6D00CBD63C /* GLES-Render.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
 		2E14D3521487CA6D00CBD63C /* GLES-Render.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "GLES-Render.mm"; sourceTree = "<group>"; };
 		2E14D3541487CA6D00CBD63C /* GameConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameConfig.h; sourceTree = "<group>"; };
@@ -578,8 +575,6 @@
 				2EE959DF148A2E4100F24552 /* Physics */,
 				2E14D3481487CA6D00CBD63C /* AppDelegate.h */,
 				2E14D3491487CA6D00CBD63C /* AppDelegate.mm */,
-				2E14D34B1487CA6D00CBD63C /* RootViewController.h */,
-				2E14D34C1487CA6D00CBD63C /* RootViewController.m */,
 				2E14D1841487CA6A00CBD63C /* Resources */,
 				2E14D1981487CA6A00CBD63C /* libs */,
 				2E14D3441487CA6D00CBD63C /* Supporting Files */,
@@ -591,12 +586,12 @@
 			isa = PBXGroup;
 			children = (
 				B91FFE3E148B585E0028247B /* sprites.plist */,
+				B91FFE3F148B585E0028247B /* sprites.png */,
 				B91FFE2D148B585E0028247B /* background.caf */,
 				B91FFE2E148B585E0028247B /* battleEffect.wav */,
 				B91FFE2F148B585E0028247B /* catchEffect.wav */,
 				B91FFE32148B585E0028247B /* DefaultLandscape.png */,
 				B91FFE3B148B585E0028247B /* loveEffect.wav */,
-				B91FFE3F148B585E0028247B /* sprites.png */,
 				2E14D1851487CA6A00CBD63C /* Default.png */,
 				2E14D1871487CA6A00CBD63C /* fps_images.png */,
 				2E14D1891487CA6A00CBD63C /* Icon-72.png */,
@@ -835,6 +830,8 @@
 		2E14D28F1487CA6B00CBD63C /* CocosDenshion */ = {
 			isa = PBXGroup;
 			children = (
+				B91FFE30148B585E0028247B /* CDXPropertyModifierAction.h */,
+				B91FFE31148B585E0028247B /* CDXPropertyModifierAction.m */,
 				2E14D2901487CA6B00CBD63C /* CDAudioManager.h */,
 				2E14D2911487CA6B00CBD63C /* CDAudioManager.m */,
 				2E14D2931487CA6B00CBD63C /* CDConfig.h */,
@@ -1090,8 +1087,6 @@
 		B91FFE53148B58A70028247B /* Sound */ = {
 			isa = PBXGroup;
 			children = (
-				B91FFE30148B585E0028247B /* CDXPropertyModifierAction.h */,
-				B91FFE31148B585E0028247B /* CDXPropertyModifierAction.m */,
 				B91FFE33148B585E0028247B /* GameSoundManager.h */,
 				B91FFE34148B585E0028247B /* GameSoundManager.m */,
 			);
@@ -1305,7 +1300,6 @@
 				2E14D3411487CA6D00CBD63C /* b2WeldJoint.cpp in Sources */,
 				2E14D3471487CA6D00CBD63C /* main.m in Sources */,
 				2E14D34A1487CA6D00CBD63C /* AppDelegate.mm in Sources */,
-				2E14D34D1487CA6D00CBD63C /* RootViewController.m in Sources */,
 				2E14D3531487CA6D00CBD63C /* GLES-Render.mm in Sources */,
 				2E14D3691487CAD600CBD63C /* Bird.mm in Sources */,
 				2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */,

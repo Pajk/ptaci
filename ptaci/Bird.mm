@@ -38,6 +38,7 @@
         default:
             break;
     }
+    bird.birdType = birdType;
     return bird;
 }
 
