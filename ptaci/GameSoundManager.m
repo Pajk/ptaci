@@ -13,11 +13,25 @@
 //is loaded to the playback buffer
 -(void) preload {
 	
-	[soundEngine_ preloadEffect:@"battleEffect.wav"];
-	[soundEngine_ preloadEffect:@"loveEffect.wav"];
-	[soundEngine_ preloadEffect:@"catchEffect.wav"];
+	[soundEngine_ preloadEffect:@"complain1.wav"];
+    [soundEngine_ preloadEffect:@"complain2.wav"];
+    [soundEngine_ preloadEffect:@"complain3.wav"];
+    [soundEngine_ preloadEffect:@"flight1.wav"];
+    [soundEngine_ preloadEffect:@"flight2.wav"];
+    [soundEngine_ preloadEffect:@"fly1.wav"];
+    [soundEngine_ preloadEffect:@"fly2.wav"];
+    [soundEngine_ preloadEffect:@"fly3.wav"];
+    [soundEngine_ preloadEffect:@"flyaway1.wav"];
+    [soundEngine_ preloadEffect:@"flyaway2.wav"];
+    [soundEngine_ preloadEffect:@"flyaway3.wav"];
+    [soundEngine_ preloadEffect:@"love1.wav"];
+    [soundEngine_ preloadEffect:@"love2.wav"];
+    [soundEngine_ preloadEffect:@"love3.wav"];
+    [soundEngine_ preloadEffect:@"pickup1.wav"];
+    [soundEngine_ preloadEffect:@"pickup2.wav"];
+    [soundEngine_ preloadEffect:@"select.wav"];
     
-	[soundEngine_ preloadBackgroundMusic:@"background.caf"];	
+	[soundEngine_ preloadBackgroundMusic:@"menu.caf"];	
 }	
 
 //TODO: modify these parameters to your own taste, e.g you may want a longer fade out or a different type of curve

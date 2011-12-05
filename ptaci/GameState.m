@@ -42,8 +42,8 @@ static GameState *_sharedState = nil;
         ActionLevel *level1 = [[[ActionLevel alloc] init] autorelease];
         level1.spawnSeconds = 15;
         level1.spawnRate = 1;
-        [level1.spawnIds addObject:[NSNumber numberWithInt:BirdTypeFast]];
-        [level1.spawnIds addObject:[NSNumber numberWithInt:BirdTypeSlow]];
+        [level1.spawnIds addObject:[NSNumber numberWithInt:BirdTypeBlue]];
+        [level1.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [_levels addObject:level1];
         
         // Story 2
@@ -54,10 +54,11 @@ static GameState *_sharedState = nil;
         // Level 2
         ActionLevel *level2 = [[[ActionLevel alloc] init] autorelease];
         level2.spawnSeconds = 25;
-        level2.spawnRate = 2;
-        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeSlow]];
-        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeFast]];
-        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeFast]];
+        level2.spawnRate = 3;
+        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeBlue]];
+        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeBlue]];
+        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
+        [level2.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [_levels addObject:level2];
         
         // Story 3
@@ -70,7 +71,12 @@ static GameState *_sharedState = nil;
         level3.spawnSeconds = 10;        
         level3.spawnRate = 10;
         level3.isFinalLevel = YES;
-        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeSlow]];
+        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
+        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
+        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
+        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
+        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
+        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [_levels addObject:level3];
     }
     return self;

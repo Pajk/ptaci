@@ -17,6 +17,8 @@
 #define PTM_RATIO 32
 #define ROPE_HEIGHT 100
 #define BIRDS_LIMIT 40
+#define BIRD_TAG 1
+#define ROPE_TAG 2
 
 @implementation ActionScene
 @synthesize layer = _layer;
@@ -87,11 +89,12 @@ SimpleAudioEngine *soundEngine;
         
         // Add a sprite sheet based on the loaded texture and add it to the scene
         self.batchNode = [CCSpriteBatchNode batchNodeWithTexture:[[CCTextureCache sharedTextureCache] addImage:@"sprites.png"]];
+        
         [self addChild:_batchNode z:-1];
         
         // Add main background to scene
         winSize = [CCDirector sharedDirector].winSize;
-        self.background = [CCSprite spriteWithSpriteFrameName:@"Game_background.png"];
+        self.background = [CCSprite spriteWithSpriteFrameName:@"Game_background1.png"];
         _background.position = ccp(winSize.width/2, winSize.height/2);
         [_batchNode addChild:_background];
         
@@ -171,15 +174,47 @@ SimpleAudioEngine *soundEngine;
     [self updateScore];
 }
 
+- (void)loveEventFor:(Bird *)birdA with:(Bird *)birdB {
+    self.score++;
+    int rnd = arc4random()%3;
+    if (rnd == 0) {
+        [soundEngine playEffect:@"love1.wav" pitch:1.0f pan:0.0f gain:1.0f];
+    } else if (rnd == 1) {
+        [soundEngine playEffect:@"love2.wav" pitch:1.0f pan:0.0f gain:1.0f];
+    } else {
+        [soundEngine playEffect:@"love3.wav" pitch:1.0f pan:0.0f gain:1.0f];
+    }
+}
+
+- (void)battleEventFor:(Bird *)birdA with:(Bird *)birdB {
+    self.score--;
+    if (arc4random()%2) {
+        [soundEngine playEffect:@"fight1.wav" pitch:1.0f pan:0.0f gain:1.0f];
+    } else {
+        [soundEngine playEffect:@"fight2.wav" pitch:1.0f pan:0.0f gain:1.0f];
+    }
+}
+
 - (void)update:(ccTime)dt {
     
     if (!_inLevel) return;
     
+    for (Bird *bird in _birds) {
+        int rnd = arc4random()%100;
+        if (rnd < 10) {
+            [bird stopAllActions];
+            [bird eye:TRUE];
+        } else if (rnd > 10 && rnd < 20) {
+            [bird stopAllActions];
+            [bird beak:TRUE];
+        }
+    }
+    
     // Advance the physics world by one step, using fixed time steps
-    float timeStep = 0.03f;
+//    float timeStep = 0.03f;
     int32 velocityIterations = 8;
-    int32 positionIterations = 1;
-    _world->Step(timeStep, velocityIterations, positionIterations);
+    int32 positionIterations = 8;
+    _world->Step(dt, velocityIterations, positionIterations);
     
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {   
         CCSprite *sprite = (CCSprite *)b->GetUserData();
@@ -189,13 +224,13 @@ SimpleAudioEngine *soundEngine;
         }        
     }
     
-//    MY NEW GREAT METHOD (DOESNT WORK)
+    // Remove collided birds from scene
     std::vector<b2Body *>toBattle; 
     std::vector<b2Body *>toLove;
     std::vector<BirdsContact>::iterator pos;
     std::list<b2Body *>toDestroy;
-    for(pos = _contactListener->_contacts.begin(); 
-        pos != _contactListener->_contacts.end(); ++pos) {
+    
+    for(pos = _contactListener->_contacts.begin(); pos != _contactListener->_contacts.end(); ++pos) {
         BirdsContact contact = *pos;
         
         b2Body *bodyA = contact.fixtureA->GetBody();
@@ -212,16 +247,15 @@ SimpleAudioEngine *soundEngine;
                     Bird *birdA = (Bird*)spriteA;
                     Bird *birdB = (Bird*)spriteB;
                     
+                    [birdA flight:NO];
+                    [birdB flight:NO];
+                    
                     // Same type -> love making
-                    NSLog(@"A:%d",[birdA birdType]);
-                    NSLog(@"B:%d",[birdB birdType]);
                     if ([birdA birdType] == [birdB birdType]) {
-                        self.score++;
-                        [soundEngine playEffect:@"loveEffect.wav" pitch:1.0f pan:0.0f gain:1.0f];
+                        [self loveEventFor:birdA with:birdB];
                     // Different types -> battle
                     } else {
-                        self.score--;
-                        [soundEngine playEffect:@"battleEffect.wav" pitch:1.0f pan:0.0f gain:1.0f];
+                        [self battleEventFor:birdA with:birdB];
                     }
                     toDestroy.push_back(bodyA);
                     toDestroy.push_back(bodyB);
@@ -230,6 +264,7 @@ SimpleAudioEngine *soundEngine;
             }
         }        
     }
+    
     toDestroy.unique();
     std::list<b2Body *>::iterator pos2;
     for(pos2 = toDestroy.begin(); pos2 != toDestroy.end(); ++pos2) {
@@ -250,61 +285,30 @@ SimpleAudioEngine *soundEngine;
         }
         _world->DestroyBody(body);
     }
-
-//    OLD METHOD
-//	NSMutableArray *birdsToDelete = [[NSMutableArray alloc] init];
-//	for (Bird *birdA in _birds) {
-//		CGRect birdARect = CGRectMake(birdA.position.x - (birdA.contentSize.width/2), 
-//                                     birdA.position.y - (birdA.contentSize.height/2), 
-//									 birdA.contentSize.width, 
-//									 birdA.contentSize.height);
-////        
-//        Bird * birdB = nil;
-//		for (Bird *curBird in _birds) {
-//			CGRect birdBRect = CGRectMake(curBird.position.x - (curBird.contentSize.width/2), 
-//										  curBird.position.y - (curBird.contentSize.height/2), 
-//                                          curBird.contentSize.width, 
-//										  curBird.contentSize.height);            
-//			if (CGRectIntersectsRect(birdARect, birdBRect)) {				
-//                birdB = curBird;
-//                break;                
-//			}						
-//		}
-//        
-//		if (birdB != nil && birdA != birdB) {            
-//
-//            if (birdA.birdType == birdB.birdType) {
-//                [soundEngine playEffect:@"loveEffect.wav" pitch:1.0f pan:0.0f gain:1.0f];
-//            } else {
-//				[soundEngine playEffect:@"battleEffect.wav"  pitch:1.0f pan:0.0f gain:1.0f];
-//            }
-//            
-//            // Remove the fucking birds
-////            [_birds removeObject:birdA];
-////            [_birds removeObject:birdB];
-////            [_batchNode removeChild:birdA cleanup:YES];									
-////            [_batchNode removeChild:birdB cleanup:YES];
-//            
-//            // Add the projectile to the list to delete
-//			[birdsToDelete addObject:birdA];
-//            [birdsToDelete addObject:birdB];
-//		}
-//	}
-//	
-////	for (CCSprite *bird in birdsToDelete) {
-////		[_birds removeObject:bird];
-////		[_batchNode removeChild:bird cleanup:YES];
-////	}
-//	[birdsToDelete release];
 }
 
 -(void)addBird:(Bird *)bird {
     
     // Determine where to spawn the bird along the X axis
+    int actualX, positionTaken, diff, tries = 0;
     int minX = bird.contentSize.width/2;
-    int maxX = winSize.width - bird.contentSize.width/2;
+    int maxX = worldWidth - bird.contentSize.width/2;
     int rangeX = maxX - minX;
-    int actualX = (arc4random() % rangeX) + minX;
+    
+    do {
+        positionTaken = 0;
+        tries++;
+        actualX = (arc4random() % rangeX) + minX;
+        for (CCSprite *bird in _birds) {
+            diff = abs(actualX - bird.position.x);
+            if(diff < minX) {
+                positionTaken = 1;
+                break;
+            }
+        }
+
+    } while (tries < 10 && positionTaken);
+    
     
     // Create the bird slightly off-screen along the right edge,
     // and along a random position along the Y axis as calculated above
@@ -322,7 +326,7 @@ SimpleAudioEngine *soundEngine;
     
     // Create box shape and assing it to the bird fixture
     b2PolygonShape birdShape;
-    birdShape.SetAsBox((bird.contentSize.width-20)/PTM_RATIO/2, (bird.contentSize.height-20)/PTM_RATIO/2);
+    birdShape.SetAsBox((bird.contentSize.width)/PTM_RATIO/2, (bird.contentSize.height)/PTM_RATIO/2);
     
     // Create shape definition and add to body
     b2FixtureDef birdShapeDef;
@@ -333,7 +337,7 @@ SimpleAudioEngine *soundEngine;
     birdBody->CreateFixture(&birdShapeDef);
 
 	// Add to birds array
-	bird.tag = 1;
+	bird.tag = BIRD_TAG;
 	[_birds addObject:bird];
 }
 
@@ -342,6 +346,7 @@ SimpleAudioEngine *soundEngine;
     for (NSNumber *birdIdNumber in curLevel.spawnIds) {
         int birdId = birdIdNumber.intValue;
         Bird *bird = [Bird birdWithType:(BirdType)birdId];
+        [bird flight:YES];
         if (bird != nil) {
             [self addBird:bird];
         }
@@ -359,7 +364,7 @@ SimpleAudioEngine *soundEngine;
 		//Start background music
 		soundEngine.backgroundMusicVolume = 1.0f;
 		[soundEngine rewindBackgroundMusic];
-		[soundEngine playBackgroundMusic:@"background.caf"];
+		[soundEngine playBackgroundMusic:@"game.caf"];
         self.levelBegin = now;
         return;
     } else {
@@ -394,8 +399,8 @@ SimpleAudioEngine *soundEngine;
     CGPoint location = [self convertTouchToNodeSpace:touch];
     b2Vec2 locationWorld = [self toMeters:location];
     
-    // itereate all bodies in our world and all their fixtures
-    // and check if touch location match with their position
+    // Itereate all bodies in our world and all their fixtures
+    // and check if touch location match with their position.
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
         for(b2Fixture *f = b->GetFixtureList(); f; f=f->GetNext()) {
             if (f->TestPoint(locationWorld)) {
@@ -408,6 +413,8 @@ SimpleAudioEngine *soundEngine;
                 
                 _mouseJoint = (b2MouseJoint *)_world->CreateJoint(&md);
                 b->SetAwake(true);
+                
+                [soundEngine playEffect:@"pickup2.wav" pitch:1.0f pan:0.0f gain:1.0f];
             }
         }
     }
@@ -453,8 +460,8 @@ SimpleAudioEngine *soundEngine;
     
     b2FixtureDef fd;
     fd.shape = &shape;
-    fd.density = 20.0f;
-    fd.friction = 0.2f;
+    fd.density = 1.0f;
+//    fd.friction = 0.2f;
 //    fd.restitution = 0.01f;
 	
 	b2BodyDef fixDef;
@@ -471,7 +478,7 @@ SimpleAudioEngine *soundEngine;
 //    jd.lowerAngle = -0.5f * b2_pi; // -90 degrees
 //    jd.upperAngle = 0.25f * b2_pi; // 45 degrees
     jd.enableLimit = true;
-    jd.maxMotorTorque = 2000.0f;
+    jd.maxMotorTorque = 10.0f;
     jd.motorSpeed = 0.0f;
     jd.enableMotor = true;
 	
@@ -481,6 +488,7 @@ SimpleAudioEngine *soundEngine;
         // Create and display sprite
         CCSprite * sprite = [CCSprite spriteWithSpriteFrameName:@"Bridge_block.png"];
         sprite.position = ccp((i * segmentWidth) + segmentWidth/2, ROPE_HEIGHT);
+        sprite.tag = ROPE_TAG;
         [_batchNode addChild:sprite z:1];
         
 		fixDef.type = b2_dynamicBody;

@@ -9,7 +9,7 @@
 #import "LoadingScene.h"
 #import "GameState.h"
 #import "AppDelegate.h"
-#import "SimpleAudioEngine.h"
+#import "GameSoundManager.h"
 
 @implementation LoadingScene
 
@@ -36,6 +36,8 @@
 @synthesize imagesLoaded = _imagesLoaded;
 @synthesize scenesLoaded = _scenesLoaded;
 
+SimpleAudioEngine *soundEngine;
+
 - (id)init {
     
     if ((self = [super init])) {
@@ -48,6 +50,9 @@
         // Set touch enabled
         self.isTouchEnabled = YES;
         
+        // Load sound engine
+        soundEngine = [GameSoundManager sharedManager].soundEngine;
+        
         // Show Default.png until fully loaded
         CGSize winSize = [CCDirector sharedDirector].winSize;
         self.defaultImage = [CCSprite spriteWithFile:@"DefaultLandscape.png"];
@@ -56,19 +61,6 @@
         
         // Load our sprites in the background
         [[CCTextureCache sharedTextureCache] addImageAsync:@"sprites.png" target:self selector:@selector(spritesLoaded:)];
-        
-        // Load up our sound effects in the background
-		/*
-         if ([CDAudioManager sharedManagerState] != kAMStateInitialised) {
-         //The audio manager is not initialised yet so kick off the sound loading as an NSOperation that will wait for
-         //the audio manager
-         NSInvocationOperation* bufferLoadOp = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadSoundBuffers:) object:nil] autorelease];
-         NSOperationQueue *opQ = [[[NSOperationQueue alloc] init] autorelease]; 
-         [opQ addOperation:bufferLoadOp];
-         } else {
-         [self loadSoundBuffers:nil];
-         }	
-         */
 		
         // Schedule a periodic method to check status
         [self schedule: @selector(tick:)];
@@ -92,6 +84,11 @@
 - (void)tick:(ccTime)dt {
     
     if (_imagesLoaded && _scenesLoaded && _isLoading) {
+        
+        //Start background music
+        soundEngine.backgroundMusicVolume = 1.0f;
+        [soundEngine rewindBackgroundMusic];
+        [soundEngine playBackgroundMusic:@"menu.caf"];
         
         self.isLoading = NO;
         

@@ -17,6 +17,38 @@ BirdsContactListener::~BirdsContactListener() {
 }
 
 void BirdsContactListener::BeginContact(b2Contact* contact) {
+    
+    CCSprite *spriteA = (CCSprite *)contact->GetFixtureA()->GetBody()->GetUserData();
+    CCSprite *spriteB = (CCSprite *)contact->GetFixtureB()->GetBody()->GetUserData();
+    NSInteger tagA = spriteA.tag;
+    NSInteger tagB = spriteB.tag;
+    
+    // Contact bird <-> rope
+    if ( tagA == 2 || tagB == 2) {
+        if (tagA == 1) {
+            [((Bird *)spriteA) flight:NO];
+            
+        } else if (tagB == 1) {
+            [((Bird *)spriteB) flight:NO];
+        }
+        return;
+    }
+    
+    // Create contact only for bird to bird
+    if ( !( [((CCSprite *)contact->GetFixtureA()->GetBody()->GetUserData()) isKindOfClass:[Bird class]]) ||
+         !( [((CCSprite *)contact->GetFixtureB()->GetBody()->GetUserData()) isKindOfClass:[Bird class]]) ) {
+        return;
+    }
+    
+    // Dont create new contact if one of the fixtures is in contact
+    for (std::vector<BirdsContact>::iterator it = _contacts.begin(); it != _contacts.end(); ++it) {
+    
+        if ((*it).fixtureA == contact->GetFixtureA() || (*it).fixtureA == contact->GetFixtureB() ||
+            (*it).fixtureB == contact->GetFixtureA() || (*it).fixtureB == contact->GetFixtureB()) {
+            return;
+        }
+    }
+    
     // We need to copy out the data because the b2Contact passed in is reused.
     BirdsContact birdContact = { contact->GetFixtureA(), contact->GetFixtureB() };
     _contacts.push_back(birdContact);
