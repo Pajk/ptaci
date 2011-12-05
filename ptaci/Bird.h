@@ -22,6 +22,7 @@ typedef enum {
     CCAction *_flightAction;
     CCAction *_beakAction;
     CCAction *_eyeAction;
+    BOOL _flying;
 }
 
 @property (nonatomic, assign) BirdType birdType;
@@ -32,6 +33,7 @@ typedef enum {
 @property (nonatomic, retain) CCAction *flightAction;
 @property (nonatomic, retain) CCAction *beakAction;
 @property (nonatomic, retain) CCAction *eyeAction;
+@property (nonatomic, assign) BOOL flying;
 
 - (void)initActions;
 - (Bird *)flight:(BOOL)state;

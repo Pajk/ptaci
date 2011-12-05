@@ -19,6 +19,7 @@
 @synthesize flightAction    = _flightAction;
 @synthesize beakAction      = _beakAction;
 @synthesize eyeAction       = _eyeAction;
+@synthesize flying          = _flying;
 
 - (void)initActions {
     
@@ -70,8 +71,10 @@
 
 - (Bird *)flight:(BOOL)state {
     if (state) {
+        _flying = YES;
         [self runAction:_flightAction];
     } else {
+        _flying = NO;
         [self stopAction:_flightAction];
     }
     return self;

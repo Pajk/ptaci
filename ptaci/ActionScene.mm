@@ -200,6 +200,9 @@ SimpleAudioEngine *soundEngine;
     if (!_inLevel) return;
     
     for (Bird *bird in _birds) {
+        if (bird.flying == YES) {
+            continue;
+        }
         int rnd = arc4random()%100;
         if (rnd < 10) {
             [bird stopAllActions];
