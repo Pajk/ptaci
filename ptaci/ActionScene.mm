@@ -12,6 +12,7 @@
 #import "GameState.h"
 #import "Level.h"
 #import "GameSoundManager.h"
+#import "AutoCleanSprite.h"
 #import <list>
 
 #define PTM_RATIO 32
@@ -184,6 +185,31 @@ SimpleAudioEngine *soundEngine;
     } else {
         [soundEngine playEffect:@"love3.wav" pitch:1.0f pan:0.0f gain:1.0f];
     }
+    
+    NSString *color = @"red";
+    if (birdA.birdType == BirdTypeBlue) {
+        color = @"blue";
+    }
+    
+    NSMutableArray *animFrames = [NSMutableArray array];
+    for(int i = 1; i <= 6; ++i) {
+        [animFrames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:
+                               [NSString stringWithFormat:@"%@-love%d.png", color, i]]];
+    }
+    CCAnimation *anim = [CCAnimation animationWithFrames:animFrames delay:0.2f];
+//    CCAction *action = [CCRepeat actionWithAction:[CCAnimate actionWithAnimation:anim restoreOriginalFrame:NO] times:1];
+    
+    AutoCleanSprite *loveSprite = [AutoCleanSprite spriteWithSpriteFrameName:[NSString stringWithFormat:@"%@-love1.png", color]];       
+    loveSprite.position = birdA.position;
+    loveSprite.tag = 3;
+    
+    CCAction *loveAction = [CCSequence actions:                          
+                              [CCAnimate actionWithAnimation:anim restoreOriginalFrame:NO],
+                              [CCCallFunc actionWithTarget:loveSprite selector:@selector(removeFromParent)],
+                              nil];
+    
+    [_batchNode addChild:loveSprite];
+    [loveSprite runAction:loveAction];
 }
 
 - (void)battleEventFor:(Bird *)birdA with:(Bird *)birdB {
@@ -193,6 +219,26 @@ SimpleAudioEngine *soundEngine;
     } else {
         [soundEngine playEffect:@"fight2.wav" pitch:1.0f pan:0.0f gain:1.0f];
     }
+    
+    NSMutableArray *animFrames = [NSMutableArray array];
+    for(int i = 1; i <= 15; ++i) {
+        [animFrames addObject:[[CCSpriteFrameCache sharedSpriteFrameCache] spriteFrameByName:
+                                  [NSString stringWithFormat:@"fight%d.png", i]]];
+    }
+    CCAnimation *anim = [CCAnimation animationWithFrames:animFrames delay:0.2f];
+//    CCAction *action = [CCRepeat actionWithAction:[CCAnimate actionWithAnimation:anim restoreOriginalFrame:NO] times:1];
+    
+    AutoCleanSprite *battleSprite = [AutoCleanSprite spriteWithSpriteFrameName:@"fight1.png"];        
+    battleSprite.position = birdA.position;
+    battleSprite.tag = 3;
+
+    CCAction *battleAction = [CCSequence actions:  
+                        [CCAnimate actionWithAnimation:anim restoreOriginalFrame:NO],
+                        [CCCallFunc actionWithTarget:battleSprite selector:@selector(removeFromParent)],
+                        nil];
+    
+    [_batchNode addChild:battleSprite];
+    [battleSprite runAction:battleAction];
 }
 
 - (void)update:(ccTime)dt {
@@ -203,13 +249,17 @@ SimpleAudioEngine *soundEngine;
         if (bird.flying == YES) {
             continue;
         }
-        int rnd = arc4random()%100;
-        if (rnd < 10) {
+        int rnd = arc4random()%500;
+        if (rnd == 1) {
             [bird stopAllActions];
             [bird eye:TRUE];
-        } else if (rnd > 10 && rnd < 20) {
+        } else if (rnd == 10) {
             [bird stopAllActions];
             [bird beak:TRUE];
+        } else if (rnd == 20) {
+            bird.flipX = YES;
+        } else if (rnd == 30) {
+            bird.flipX = NO;
         }
     }
     
@@ -224,6 +274,21 @@ SimpleAudioEngine *soundEngine;
         if (sprite != NULL) {
             sprite.position = [self toPixels:b->GetPosition()];
             sprite.rotation = -1 * CC_RADIANS_TO_DEGREES(b->GetAngle());
+            
+            if (sprite.tag == BIRD_TAG) {
+                Bird * bird = (Bird *)sprite;
+                if (bird.flying == YES) {
+                    b2Vec2 force = b2Vec2(0, 15.0f);
+                    b->ApplyForce(force, b->GetWorldCenter());
+                    if (arc4random()%100 < 50) {
+                        b2Vec2 force = b2Vec2(5.0f, 0);
+                        b->ApplyForce(force, b->GetWorldCenter());
+                    } else {
+                        b2Vec2 force = b2Vec2(-5.0f, 0);
+                        b->ApplyForce(force, b->GetWorldCenter());
+                    }
+                }
+            }
         }        
     }
     
@@ -315,7 +380,7 @@ SimpleAudioEngine *soundEngine;
     
     // Create the bird slightly off-screen along the right edge,
     // and along a random position along the Y axis as calculated above
-    bird.position = ccp(actualX, winSize.height + (bird.contentSize.height));
+    bird.position = ccp(actualX, winSize.height + bird.contentSize.height/2);
     [_batchNode addChild:bird z:1];
     
     // Create bird body 
@@ -374,6 +439,11 @@ SimpleAudioEngine *soundEngine;
         if (now - _levelBegin >= curLevel.spawnSeconds) {
             
             if (_birds.count < 2) {
+                for (CCSprite *sprt in _batchNode.children) {
+                    if (sprt.tag == 3) {
+                        [_batchNode removeChild:sprt cleanup:YES];
+                    }
+                }
                 _inLevel = FALSE;
                 [self fadeOutMusic];
                 [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
@@ -405,6 +475,10 @@ SimpleAudioEngine *soundEngine;
     // Itereate all bodies in our world and all their fixtures
     // and check if touch location match with their position.
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
+        // User can grab only birds
+        if(((CCSprite*)b->GetUserData()).tag != BIRD_TAG) {
+            continue;
+        }
         for(b2Fixture *f = b->GetFixtureList(); f; f=f->GetNext()) {
             if (f->TestPoint(locationWorld)) {
                 b2MouseJointDef md;
@@ -464,11 +538,11 @@ SimpleAudioEngine *soundEngine;
     b2FixtureDef fd;
     fd.shape = &shape;
     fd.density = 1.0f;
-//    fd.friction = 0.2f;
+//    fd.friction = 0.5f;
 //    fd.restitution = 0.01f;
 	
 	b2BodyDef fixDef;
-	fixDef.type = b2_kinematicBody;
+	fixDef.type = b2_staticBody;
 	fixDef.position.Set(0, ROPE_HEIGHT/PTM_RATIO);
     fixDef.allowSleep = true;
 	b2Body *leftFix = _world->CreateBody(&fixDef);
@@ -477,11 +551,11 @@ SimpleAudioEngine *soundEngine;
     jd.collideConnected = false;
 //    tohle muzem omezit, ale pak se to musi prenastavit pro posledni blok
 //    jd.lowerAngle = 0.0f * b2_pi;
-//    jd.upperAngle = 0.1f * b2_pi;
+//    jd.upperAngle = 0.0f * b2_pi;
 //    jd.lowerAngle = -0.5f * b2_pi; // -90 degrees
 //    jd.upperAngle = 0.25f * b2_pi; // 45 degrees
-    jd.enableLimit = true;
-    jd.maxMotorTorque = 10.0f;
+//    jd.enableLimit = true;
+    jd.maxMotorTorque = 1000.0f;
     jd.motorSpeed = 0.0f;
     jd.enableMotor = true;
 	
@@ -511,7 +585,7 @@ SimpleAudioEngine *soundEngine;
     
     // Last sprite has to be "joint" to right edge
     fixDef.position.Set(worldWidth/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);
-	fixDef.type = b2_kinematicBody;
+	fixDef.type = b2_staticBody;
 	b2Body *rightFix = _world->CreateBody(&fixDef);
    	
 	b2Vec2 anchor(worldWidth/PTM_RATIO, ROPE_HEIGHT/PTM_RATIO);

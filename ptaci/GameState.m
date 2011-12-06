@@ -40,8 +40,8 @@ static GameState *_sharedState = nil;
         
         // Level 1
         ActionLevel *level1 = [[[ActionLevel alloc] init] autorelease];
-        level1.spawnSeconds = 15;
-        level1.spawnRate = 1;
+        level1.spawnSeconds = 20;
+        level1.spawnRate = 4;
         [level1.spawnIds addObject:[NSNumber numberWithInt:BirdTypeBlue]];
         [level1.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [_levels addObject:level1];
@@ -68,11 +68,9 @@ static GameState *_sharedState = nil;
         
         // Level 3
         ActionLevel *level3 = [[[ActionLevel alloc] init] autorelease];
-        level3.spawnSeconds = 10;        
-        level3.spawnRate = 10;
+        level3.spawnSeconds = 30;        
+        level3.spawnRate = 1;
         level3.isFinalLevel = YES;
-        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
-        [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];
         [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeRed]];

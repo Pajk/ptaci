@@ -176,8 +176,9 @@
 		2E56792F148C2DCC006E91D2 /* pickup1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2E56791C148C2DCC006E91D2 /* pickup1.wav */; };
 		2E567930148C2DCC006E91D2 /* pickup2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2E56791D148C2DCC006E91D2 /* pickup2.wav */; };
 		2E567931148C2DCC006E91D2 /* select.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2E56791E148C2DCC006E91D2 /* select.wav */; };
-		2EA92071148D807F00E32A19 /* sprites.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EA9206F148D807F00E32A19 /* sprites.plist */; };
-		2EA92072148D807F00E32A19 /* sprites.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EA92070148D807F00E32A19 /* sprites.png */; };
+		2EA92075148D86EC00E32A19 /* sprites.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2EA92073148D86EC00E32A19 /* sprites.plist */; };
+		2EA92076148D86EC00E32A19 /* sprites.png in Resources */ = {isa = PBXBuildFile; fileRef = 2EA92074148D86EC00E32A19 /* sprites.png */; };
+		2EA92079148D928B00E32A19 /* AutoCleanSprite.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EA92078148D928B00E32A19 /* AutoCleanSprite.m */; };
 		2EE959E2148A2E7600F24552 /* BirdsContactListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */; };
 		B91FFE42148B585E0028247B /* ActionScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = B91FFE2C148B585E0028247B /* ActionScene.mm */; };
 		B91FFE43148B585E0028247B /* background.caf in Resources */ = {isa = PBXBuildFile; fileRef = B91FFE2D148B585E0028247B /* background.caf */; };
@@ -519,8 +520,10 @@
 		2E56791C148C2DCC006E91D2 /* pickup1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pickup1.wav; sourceTree = "<group>"; };
 		2E56791D148C2DCC006E91D2 /* pickup2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pickup2.wav; sourceTree = "<group>"; };
 		2E56791E148C2DCC006E91D2 /* select.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = select.wav; sourceTree = "<group>"; };
-		2EA9206F148D807F00E32A19 /* sprites.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = sprites.plist; sourceTree = "<group>"; };
-		2EA92070148D807F00E32A19 /* sprites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprites.png; sourceTree = "<group>"; };
+		2EA92073148D86EC00E32A19 /* sprites.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = sprites.plist; sourceTree = "<group>"; };
+		2EA92074148D86EC00E32A19 /* sprites.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sprites.png; sourceTree = "<group>"; };
+		2EA92077148D928B00E32A19 /* AutoCleanSprite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoCleanSprite.h; sourceTree = "<group>"; };
+		2EA92078148D928B00E32A19 /* AutoCleanSprite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoCleanSprite.m; sourceTree = "<group>"; };
 		2EE959E0148A2E7600F24552 /* BirdsContactListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BirdsContactListener.h; sourceTree = "<group>"; };
 		2EE959E1148A2E7600F24552 /* BirdsContactListener.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BirdsContactListener.mm; sourceTree = "<group>"; };
 		B91FFE2B148B585E0028247B /* ActionScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionScene.h; sourceTree = "<group>"; };
@@ -617,8 +620,8 @@
 		2E14D1841487CA6A00CBD63C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2EA9206F148D807F00E32A19 /* sprites.plist */,
-				2EA92070148D807F00E32A19 /* sprites.png */,
+				2EA92073148D86EC00E32A19 /* sprites.plist */,
+				2EA92074148D86EC00E32A19 /* sprites.png */,
 				B91FFE2D148B585E0028247B /* background.caf */,
 				B91FFE32148B585E0028247B /* DefaultLandscape.png */,
 				2E14D1851487CA6A00CBD63C /* Default.png */,
@@ -1104,6 +1107,8 @@
 			children = (
 				2E14D3621487CAD600CBD63C /* Bird.h */,
 				2E14D3631487CAD600CBD63C /* Bird.mm */,
+				2EA92077148D928B00E32A19 /* AutoCleanSprite.h */,
+				2EA92078148D928B00E32A19 /* AutoCleanSprite.m */,
 			);
 			name = Sprites;
 			sourceTree = "<group>";
@@ -1221,8 +1226,8 @@
 				2E56792F148C2DCC006E91D2 /* pickup1.wav in Resources */,
 				2E567930148C2DCC006E91D2 /* pickup2.wav in Resources */,
 				2E567931148C2DCC006E91D2 /* select.wav in Resources */,
-				2EA92071148D807F00E32A19 /* sprites.plist in Resources */,
-				2EA92072148D807F00E32A19 /* sprites.png in Resources */,
+				2EA92075148D86EC00E32A19 /* sprites.plist in Resources */,
+				2EA92076148D86EC00E32A19 /* sprites.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1375,6 +1380,7 @@
 				B91FFE4B148B585E0028247B /* LoadingScene.m in Sources */,
 				B91FFE4D148B585E0028247B /* MainMenuScene.m in Sources */,
 				B91FFE50148B585E0028247B /* StoryScene.m in Sources */,
+				2EA92079148D928B00E32A19 /* AutoCleanSprite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

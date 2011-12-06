@@ -25,9 +25,9 @@ void BirdsContactListener::BeginContact(b2Contact* contact) {
     
     // Contact bird <-> rope
     if ( tagA == 2 || tagB == 2) {
+        
         if (tagA == 1) {
             [((Bird *)spriteA) flight:NO];
-            
         } else if (tagB == 1) {
             [((Bird *)spriteB) flight:NO];
         }
