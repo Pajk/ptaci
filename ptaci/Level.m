@@ -16,16 +16,19 @@
 @implementation StoryLevel
 @synthesize storyStrings = _storyStrings;
 @synthesize isGameOver = _isGameOver;
+@synthesize backgroundNames = _backgroundNames;
 
 - (id)init {
     if ((self = [super init])) {
-        self.storyStrings = [[[NSMutableArray alloc] init] autorelease];        
+        self.storyStrings = [[[NSMutableArray alloc] init] autorelease];  
+        self.backgroundNames = [[[NSMutableArray alloc] init] autorelease];
     }
     return self;
 }
 
 - (void) dealloc {
     self.storyStrings = nil;
+    self.backgroundNames = nil;
     [super dealloc];
 }
 

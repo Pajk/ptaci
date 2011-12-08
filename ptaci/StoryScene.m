@@ -43,9 +43,6 @@
         
         // Add main background to scene
         CGSize winSize = [CCDirector sharedDirector].winSize;
-        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:@"Menu_background.png"];
-        _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
-        [_batchNode addChild:_main_bkgrnd];
         
         // Add a label to the scene
         self.label = [CCLabelTTF labelWithString:@"" dimensions:CGSizeMake(winSize.width-40, winSize.height-70) alignment:UITextAlignmentCenter fontName:@"Verdana" fontSize:24];
@@ -57,7 +54,7 @@
         self.tapToCont = [CCSprite spriteWithSpriteFrameName:@"continue.png"];
         _tapToCont.position = ccp(winSize.width / 2, _tapToCont.contentSize.height/2 + 30);
         _tapToCont.visible = NO;
-        [_batchNode addChild:_tapToCont];
+        [_batchNode addChild:_tapToCont z:10];
         
         // Add "new game" sprite
         self.spriteNewGame = [CCSprite spriteWithSpriteFrameName:@"play.png"];
@@ -71,9 +68,26 @@
 - (void)displayCurStoryString {
     
     StoryLevel *curLevel = (StoryLevel *)[GameState sharedState].curLevel;
-    NSString *curStoryString = [curLevel.storyStrings objectAtIndex:_curStoryIndex];
-    [_label setString:curStoryString];
     
+    if (curLevel.storyStrings.count > 0) {
+        NSString *curStoryString = [curLevel.storyStrings objectAtIndex:_curStoryIndex];
+        [_label setString:curStoryString];
+    }
+    
+    // Set story level background
+    if (_main_bkgrnd) {
+        [_batchNode removeChild:_main_bkgrnd cleanup:YES];
+    }
+    CGSize winSize = [CCDirector sharedDirector].winSize;
+    if (curLevel.backgroundNames.count > _curStoryIndex) {
+        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:[curLevel.backgroundNames objectAtIndex:_curStoryIndex]];
+        
+    } else {
+        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:@"Menu_background.png"];
+    }
+    _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
+    [_batchNode addChild:_main_bkgrnd z:5];
+
     if (curLevel.isGameOver && _curStoryIndex == curLevel.storyStrings.count - 1) {
         _spriteNewGame.visible = YES;
         _tapToCont.visible = NO;
@@ -86,7 +100,7 @@
 
 - (void)onEnter {
     [super onEnter];
-	
+    
     // Display the current string
     _curStoryIndex = 0;
     [self displayCurStoryString];
@@ -104,7 +118,7 @@
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     _curStoryIndex++;
     StoryLevel *curLevel = (StoryLevel *)[GameState sharedState].curLevel;
-    if (_curStoryIndex < curLevel.storyStrings.count) {
+    if (_curStoryIndex < curLevel.storyStrings.count || _curStoryIndex < curLevel.backgroundNames.count) {
         [self displayCurStoryString];
     } else {
         AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;

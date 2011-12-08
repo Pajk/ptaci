@@ -39,9 +39,12 @@
 - (id)init {
     if ((self = [super init])) {
         CGSize winSize = [CCDirector sharedDirector].winSize;
-        _statusLabel = [CCLabelTTF labelWithString:@"" fontName:@"Arial" fontSize:12.0];
-        _statusLabel.position = ccp(winSize.width* 0.85, winSize.height * 0.9);
-        [self addChild:_statusLabel];        
+		_statusLabel = [[CCLabelAtlas labelWithString:@"0" charMapFile:@"fps_images.png" itemWidth:16 itemHeight:24 startCharMap:'.'] retain];
+        _statusLabel.position = ccp(winSize.width* 0.78, winSize.height * 0.85);
+        _statusHeart = [CCSprite spriteWithSpriteFrameName:@"heart.png"];
+        _statusHeart.position = ccp(winSize.width* 0.9, winSize.height * 0.9);
+        [self addChild:_statusHeart];
+        [self addChild:_statusLabel];
     }
     return self;
 }
@@ -84,13 +87,13 @@ SimpleAudioEngine *soundEngine;
         
         self.birds = [[[NSMutableArray alloc] init] autorelease];
         
-        // Show game score
-        _hud = hudLayer;
-        
         // Add a sprite sheet based on the loaded texture and add it to the scene
         self.batchNode = [CCSpriteBatchNode batchNodeWithTexture:[[CCTextureCache sharedTextureCache] addImage:@"sprites.png"]];
         
         [self addChild:_batchNode z:-1];
+        
+        // Show game score
+        _hud = hudLayer;
         
         // Add main background to scene
         winSize = [CCDirector sharedDirector].winSize;
@@ -146,6 +149,9 @@ SimpleAudioEngine *soundEngine;
 		
         // Create rope
         [self createRope];
+        
+        // Set score
+        _score = 0;
     }
     return self;
 }
@@ -174,7 +180,6 @@ SimpleAudioEngine *soundEngine;
     [self registerWithTouchDispatcher];
     
     // Render score
-    _score = 0;
     [self updateScore];
 }
 
@@ -200,7 +205,6 @@ SimpleAudioEngine *soundEngine;
                                [NSString stringWithFormat:@"%@-love%d.png", color, i]]];
     }
     CCAnimation *anim = [CCAnimation animationWithFrames:animFrames delay:0.2f];
-//    CCAction *action = [CCRepeat actionWithAction:[CCAnimate actionWithAnimation:anim restoreOriginalFrame:NO] times:1];
     
     AutoCleanSprite *loveSprite = [AutoCleanSprite spriteWithSpriteFrameName:[NSString stringWithFormat:@"%@-love1.png", color]];       
     loveSprite.position = birdA.position;
@@ -211,12 +215,14 @@ SimpleAudioEngine *soundEngine;
                               [CCCallFunc actionWithTarget:loveSprite selector:@selector(removeFromParent)],
                               nil];
     
-    [_batchNode addChild:loveSprite];
+    [_batchNode addChild:loveSprite z:5];
     [loveSprite runAction:loveAction];
 }
 
 - (void)battleEventFor:(Bird *)birdA with:(Bird *)birdB {
-    self.score--;
+    if (self.score > 0) {
+        self.score--;
+    }
     if (arc4random()%2) {
         [soundEngine playEffect:@"fight1.wav" pitch:1.0f pan:0.0f gain:1.0f];
     } else {
@@ -229,7 +235,6 @@ SimpleAudioEngine *soundEngine;
                                   [NSString stringWithFormat:@"fight%d.png", i]]];
     }
     CCAnimation *anim = [CCAnimation animationWithFrames:animFrames delay:0.2f];
-//    CCAction *action = [CCRepeat actionWithAction:[CCAnimate actionWithAnimation:anim restoreOriginalFrame:NO] times:1];
     
     AutoCleanSprite *battleSprite = [AutoCleanSprite spriteWithSpriteFrameName:@"fight1.png"];        
     battleSprite.position = birdA.position;
@@ -240,7 +245,7 @@ SimpleAudioEngine *soundEngine;
                         [CCCallFunc actionWithTarget:battleSprite selector:@selector(removeFromParent)],
                         nil];
     
-    [_batchNode addChild:battleSprite];
+    [_batchNode addChild:battleSprite z:5];
     [battleSprite runAction:battleAction];
 }
 
@@ -423,7 +428,6 @@ SimpleAudioEngine *soundEngine;
         [bird flight:YES];
         [self addBird:bird];
         [curLevel.spawnIds removeLastObject];
-        NSLog(@"%d", [curLevel.spawnIds count]);
     } else {
         _levelEnd = YES;
     }
@@ -456,8 +460,14 @@ SimpleAudioEngine *soundEngine;
     _inLevel = FALSE;
     [self fadeOutMusic];
     [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
-    AppDelegate*delegate = [[UIApplication sharedApplication] delegate];
-    [delegate launchNextLevel];
+    
+    AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
+    ActionLevel *curLevel = (ActionLevel *) [GameState sharedState].curLevel;        
+    if (curLevel.isFinalLevel) {
+        [delegate launchHappyEnding];
+    } else {
+        [delegate launchNextLevel];
+    }
 }
 
 - (void)gameLogic:(ccTime)dt {
@@ -643,7 +653,7 @@ SimpleAudioEngine *soundEngine;
 }
 
 - (void)updateScore {
-    [_hud setStatusString:[NSString stringWithFormat:@"%d <3", _score]];
+    [_hud setStatusString:[NSString stringWithFormat:@"%d", _score]];
 }
 
 -(void) fadeOutMusic {

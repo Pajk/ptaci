@@ -17,11 +17,14 @@
     // Normal levels
     NSMutableArray *_levels;
     int _curLevelIndex;
+    
+    Level *_happyEnding;
 }
 
 @property (nonatomic, retain) NSMutableArray *levels;
 @property (nonatomic, assign) int curLevelIndex;
 @property (nonatomic, retain) Level *curLevel;
+@property (nonatomic, retain) Level *happyEnding;
 
 - (void)reset;
 - (void)nextLevel;

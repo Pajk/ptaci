@@ -13,7 +13,8 @@
 #import "BirdsContactListener.h"
 
 @interface HudLayer : CCLayer {
-    CCLabelTTF * _statusLabel;
+    CCLabelTTF *_statusLabel;
+    CCSprite *_statusHeart;
 }
 - (void)setStatusString:(NSString *)string;
 @end

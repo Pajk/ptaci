@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2E14D16E1487CA6900CBD63C"
-               BuildableName = "ptaci.app"
+               BuildableName = "Birdoos.app"
                BlueprintName = "ptaci"
                ReferencedContainer = "container:ptaci.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2E14D16E1487CA6900CBD63C"
-            BuildableName = "ptaci.app"
+            BuildableName = "Birdoos.app"
             BlueprintName = "ptaci"
             ReferencedContainer = "container:ptaci.xcodeproj">
          </BuildableReference>
@@ -50,7 +50,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2E14D16E1487CA6900CBD63C"
-            BuildableName = "ptaci.app"
+            BuildableName = "Birdoos.app"
             BlueprintName = "ptaci"
             ReferencedContainer = "container:ptaci.xcodeproj">
          </BuildableReference>
@@ -68,7 +68,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2E14D16E1487CA6900CBD63C"
-            BuildableName = "ptaci.app"
+            BuildableName = "Birdoos.app"
             BlueprintName = "ptaci"
             ReferencedContainer = "container:ptaci.xcodeproj">
          </BuildableReference>

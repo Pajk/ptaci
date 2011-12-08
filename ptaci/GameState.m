@@ -16,6 +16,7 @@
 @synthesize levels = _levels;
 @synthesize curLevelIndex = _curLevelIndex;
 @synthesize curLevel = _curLevel;
+@synthesize happyEnding = _happyEnding;
 
 static GameState *_sharedState = nil;
 
@@ -34,8 +35,8 @@ static GameState *_sharedState = nil;
         
         // Story 1
         StoryLevel *story1 = [[[StoryLevel alloc] init] autorelease];
-        [story1.storyStrings addObject:@"Bla ble blo\n\nPip piip." ];
-        [story1.storyStrings addObject:@"A bli blo piiip..."];
+        [story1.backgroundNames addObject:@"help_ok.png"];
+        [story1.backgroundNames addObject:@"help_wrong.png"];
         [_levels addObject:story1];
         
         // Level 1
@@ -53,7 +54,7 @@ static GameState *_sharedState = nil;
         
         // Story 2
         StoryLevel *story2 = [[[StoryLevel alloc] init] autorelease];
-        [story2.storyStrings addObject:@"Piiiiiip pipiiiii." ];
+        [story2.storyStrings addObject:@"Level 2" ];
         [_levels addObject:story2];
         
         // Level 2
@@ -84,7 +85,7 @@ static GameState *_sharedState = nil;
         
         // Story 3
         StoryLevel *story3 = [[[StoryLevel alloc] init] autorelease];
-        [story3.storyStrings addObject:@"You are bird master!"]; 
+        [story3.storyStrings addObject:@"Level 3\nYou are bird master!"]; 
         [_levels addObject:story3];
         
         // Level 3
@@ -141,6 +142,12 @@ static GameState *_sharedState = nil;
         [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeBlue]];
         [level3.spawnIds addObject:[NSNumber numberWithInt:BirdTypeBlue]];
         [_levels addObject:level3];
+        
+        // Happy ending
+        StoryLevel *happyEnding = [[[StoryLevel alloc] init] autorelease];
+        [happyEnding.storyStrings addObject:@"You killed all birdoos! Poor birdoos!\nShame on you:("];       
+        happyEnding.isGameOver = YES;
+        self.happyEnding = happyEnding;
     }
     return self;
 }

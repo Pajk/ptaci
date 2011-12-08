@@ -15,8 +15,10 @@
 @interface StoryLevel : Level {
     NSMutableArray *_storyStrings;
     BOOL _isGameOver;
+    NSMutableArray *_backgroundNames;
 }
 @property (nonatomic, retain) NSMutableArray *storyStrings;
+@property (nonatomic, retain) NSMutableArray *backgroundNames;
 @property (nonatomic, assign) BOOL isGameOver;
 @end
 

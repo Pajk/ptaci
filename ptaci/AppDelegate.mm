@@ -76,9 +76,9 @@
 	// attach the openglView to the director
 	[director setOpenGLView:glView];
 	
-//	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
-//	if( ! [director enableRetinaDisplay:YES] )
-//		CCLOG(@"Retina Display Not supported");
+	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
+	//if( ! [director enableRetinaDisplay:YES] )
+	//	CCLOG(@"Retina Display Not supported");
 	
 	// Set landscape mode
 	[director setDeviceOrientation:kCCDeviceOrientationLandscapeLeft];
@@ -147,6 +147,11 @@
 - (void)launchNewGame { 
     [[GameState sharedState] reset];
     [self launchCurLevel];    
+}
+
+- (void)launchHappyEnding {
+    [GameState sharedState].curLevel = [GameState sharedState].happyEnding;
+    [self launchCurLevel];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

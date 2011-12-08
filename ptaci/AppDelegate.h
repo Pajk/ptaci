@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#define CGROUP_TOTAL                2
+//#define CGROUP_TOTAL                2
 //
 //#define SND_ID_BACKGROUND_MUSIC     0
 //#define SND_ID_BATTLE_EFFECT        1
@@ -37,5 +37,6 @@
 - (void)launchMainMenu;
 - (void)launchNewGame;
 - (void)launchNextLevel;
+- (void)launchHappyEnding;
 
 @end

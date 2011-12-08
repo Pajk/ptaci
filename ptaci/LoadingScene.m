@@ -46,15 +46,12 @@ SimpleAudioEngine *soundEngine;
         self.imagesLoaded = NO;
         self.scenesLoaded = NO;
         
-        // Set touch enabled
-        self.isTouchEnabled = YES;
-        
         // Load sound engine
         soundEngine = [GameSoundManager sharedManager].soundEngine;
         
         // Show Default.png until fully loaded
         CGSize winSize = [CCDirector sharedDirector].winSize;
-        self.defaultImage = [CCSprite spriteWithFile:@"Default.png"];
+        self.defaultImage = [CCSprite spriteWithFile:@"DefaultLandscape.png"];
         _defaultImage.position = ccp(winSize.width/2, winSize.height/2);
         [self addChild:_defaultImage];
         
@@ -67,16 +64,6 @@ SimpleAudioEngine *soundEngine;
     }
     
     return self;
-    
-}
-
-- (void)ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    if (!_isLoading) {
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-//        [delegate launchNewGame];
-        [delegate launchMainMenu];
-    }
     
 }
 
@@ -95,19 +82,9 @@ SimpleAudioEngine *soundEngine;
         [_batchNode removeChild:_loading cleanup:YES];
         self.loading = nil;
         
-        // Add "tap to continue"
-        CGSize winSize = [CCDirector sharedDirector].winSize;
-        self.tapToCont = [CCSprite spriteWithSpriteFrameName:@"continue.png"];
-        _tapToCont.position = ccp(winSize.width/2, winSize.height/2);
-        [_batchNode addChild:_tapToCont];
-        
-        // Animate the "tap to continue" much the same way we did the "loading" so user notices...
-        [_tapToCont runAction:[CCRepeatForever actionWithAction:
-                               [CCSequence actions:
-                                [CCFadeOut actionWithDuration:1.0f],
-                                [CCFadeIn actionWithDuration:1.0f],
-                                nil]]];
-        
+        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        //        [delegate launchNewGame];
+        [delegate launchMainMenu];
     }
     
 }
