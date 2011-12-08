@@ -74,8 +74,8 @@ SimpleAudioEngine *soundEngine;
     
     if (!_isLoading) {
         AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [delegate launchNewGame];
-//        [delegate launchMainMenu];
+//        [delegate launchNewGame];
+        [delegate launchMainMenu];
     }
     
 }

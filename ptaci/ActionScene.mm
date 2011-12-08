@@ -63,7 +63,7 @@
 @synthesize batchNode       = _batchNode;
 @synthesize background      = _background;
 @synthesize birds           = _birds;
-@synthesize birdColision    = _birdColision;
+@synthesize levelEnd        = _levelEnd;
 @synthesize levelBegin      = _levelBegin;
 @synthesize lastTimeBirdAdded = _lastTimeBirdAdded;
 @synthesize inLevel         = _inLevel;
@@ -164,6 +164,7 @@ SimpleAudioEngine *soundEngine;
     self.levelBegin = 0;
     self.lastTimeBirdAdded = 0;
     self.inLevel = YES;
+    self.levelEnd = NO;
 
     // turn on bird spawning
     [self schedule:@selector(update:)];
@@ -397,7 +398,8 @@ SimpleAudioEngine *soundEngine;
     
     // Create box shape and assing it to the bird fixture
     b2PolygonShape birdShape;
-    birdShape.SetAsBox((bird.contentSize.width)/PTM_RATIO/2, (bird.contentSize.height)/PTM_RATIO/2);
+    
+    birdShape.SetAsBox((bird.contentSize.width)/PTM_RATIO/2, (bird.contentSize.height-5)/PTM_RATIO/2);
     
     // Create shape definition and add to body
     b2FixtureDef birdShapeDef;
@@ -422,19 +424,43 @@ SimpleAudioEngine *soundEngine;
         [self addBird:bird];
         [curLevel.spawnIds removeLastObject];
         NSLog(@"%d", [curLevel.spawnIds count]);
+    } else {
+        _levelEnd = YES;
     }
-    
-//    for (NSNumber *birdIdNumber in curLevel.spawnIds) {
-//        int birdId = birdIdNumber.intValue;
-//        Bird *bird = [Bird birdWithType:(BirdType)birdId];
-//        [bird flight:YES];
-//        if (bird != nil) {
-//            [self addBird:bird];
-//        }
-//    }
 }
 
--(void)gameLogic:(ccTime)dt {
+- (void)getNextLevel {
+    
+    b2Body *tmp = NULL;
+    for(b2Body *b = _world->GetBodyList(); b;) {   
+        CCSprite *sprite = (CCSprite *)b->GetUserData();
+        
+        tmp = b;
+        b = b->GetNext();
+        
+        if (sprite && sprite.tag && sprite.tag == BIRD_TAG) {
+            [_batchNode removeChild:sprite cleanup:YES];
+            [_birds removeObject:sprite];
+            _world->DestroyBody(tmp);
+        }
+        tmp = NULL;
+    }
+    
+    // Remove animations (fight, love)
+    for (CCSprite *sprt in _batchNode.children) {
+        if (sprt.tag == 3) {
+            [_batchNode removeChild:sprt cleanup:YES];
+        }
+    }
+    
+    _inLevel = FALSE;
+    [self fadeOutMusic];
+    [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
+    AppDelegate*delegate = [[UIApplication sharedApplication] delegate];
+    [delegate launchNextLevel];
+}
+
+- (void)gameLogic:(ccTime)dt {
     
     if (!_inLevel) return;
     
@@ -448,20 +474,15 @@ SimpleAudioEngine *soundEngine;
 		[soundEngine playBackgroundMusic:@"game.caf"];
         self.levelBegin = now;
         
-    } else {
-            
-        if (_birds.count < 1) {
-            // Remove animations (fight, love)
-            for (CCSprite *sprt in _batchNode.children) {
-                if (sprt.tag == 3) {
-                    [_batchNode removeChild:sprt cleanup:YES];
-                }
+    } else if (_levelEnd) {
+        if (_birds.count < 2) {
+            [self getNextLevel];
+        } else if (_birds.count == 2) {
+            Bird *birdA = [_birds objectAtIndex:0];
+            Bird *birdB = [_birds objectAtIndex:1];
+            if (birdA.birdType != birdB.birdType) {
+                [self getNextLevel];
             }
-            _inLevel = FALSE;
-            [self fadeOutMusic];
-            [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
-            AppDelegate*delegate = [[UIApplication sharedApplication] delegate];
-            [delegate launchNextLevel];
         }
     }
     
@@ -472,7 +493,7 @@ SimpleAudioEngine *soundEngine;
     }
 }
 
--(void) registerWithTouchDispatcher
+- (void)registerWithTouchDispatcher
 {
     [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
 }
