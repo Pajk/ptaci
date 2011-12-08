@@ -13,9 +13,6 @@
 
 @synthesize birdType = _birdType;
 @synthesize weight = _weight;
-@synthesize minMoveDuration = _minMoveDuration;
-@synthesize maxMoveDuration = _maxMoveDuration;
-@synthesize loveEffectSoundId = _loveEffectSoundId;
 @synthesize flightAction    = _flightAction;
 @synthesize beakAction      = _beakAction;
 @synthesize eyeAction       = _eyeAction;
@@ -103,18 +100,12 @@
     switch (birdType) {
         case BirdTypeBlue:
             bird = [[[Bird alloc] initWithSpriteFrameName:@"blue-wing1.png"] autorelease];
-            bird.weight = 1.0f;
-            bird.minMoveDuration = 6;
-            bird.maxMoveDuration = 15;
-            bird.loveEffectSoundId = SND_ID_LOVE_EFFECT;
+            bird.weight = 2.0f;
             break;
             
         case BirdTypeRed:
             bird = [[[super alloc] initWithSpriteFrameName:@"red-wing1.png"] autorelease];
             bird.weight = 1.0f;
-            bird.minMoveDuration = 3;
-            bird.maxMoveDuration = 5;
-            bird.loveEffectSoundId = SND_ID_LOVE_EFFECT;
             break;
 
         default:

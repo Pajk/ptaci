@@ -22,10 +22,10 @@
     CCSpriteBatchNode *_batchNode;
     CCSprite *_background;
     NSMutableArray *_birds;
-    BOOL _birdColision;
     double _levelBegin;
     double _lastTimeBirdAdded;
     BOOL _inLevel;
+    BOOL _levelEnd;
     HudLayer *_hud;
     int _score;
     
@@ -40,7 +40,7 @@
 @property (nonatomic, assign) CCSpriteBatchNode *batchNode;
 @property (nonatomic, assign) CCSprite *background;
 @property (nonatomic, retain) NSMutableArray *birds;
-@property (nonatomic, assign) BOOL birdColision;
+@property (nonatomic, assign) BOOL levelEnd;
 @property (nonatomic, assign) double levelBegin;
 @property (nonatomic, assign) double lastTimeBirdAdded;
 @property (nonatomic, assign) BOOL inLevel;

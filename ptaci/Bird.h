@@ -17,10 +17,7 @@ typedef enum {
 
 @interface Bird : CCSprite {
     BirdType _birdType;
-    int _minMoveDuration;
-    int _maxMoveDuration;
     float _weight;
-    int _loveEffectSoundId;
     CCAction *_flightAction;
     CCAction *_beakAction;
     CCAction *_eyeAction;
@@ -29,9 +26,6 @@ typedef enum {
 
 @property (nonatomic, assign) BirdType birdType;
 @property (nonatomic, assign) float weight;
-@property (nonatomic, assign) int minMoveDuration;
-@property (nonatomic, assign) int maxMoveDuration;
-@property (nonatomic, assign) int loveEffectSoundId;
 @property (nonatomic, retain) CCAction *flightAction;
 @property (nonatomic, retain) CCAction *beakAction;
 @property (nonatomic, retain) CCAction *eyeAction;
