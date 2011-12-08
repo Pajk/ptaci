@@ -33,7 +33,7 @@
 
 @implementation ActionLevel
 
-@synthesize spawnSeconds = _spawnSeconds;
+@synthesize minScore = _minScore;
 @synthesize spawnRate = _spawnRate;
 @synthesize spawnIds = _spawnIds;
 @synthesize isFinalLevel = _isFinalLevel;

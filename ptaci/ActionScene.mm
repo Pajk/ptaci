@@ -18,7 +18,6 @@
 #define PTM_RATIO 32
 #define ROPE_HEIGHT 100
 #define BIRDS_LIMIT 40
-#define BIRD_TAG 1
 #define ROPE_TAG 2
 
 @implementation ActionScene
@@ -119,7 +118,7 @@ SimpleAudioEngine *soundEngine;
         groundBoxDef.shape = &groundBox;
         
         float widthInMeters = worldWidth / PTM_RATIO;
-        float heightInMeters = (winSize.height + 500) / PTM_RATIO; 
+        float heightInMeters = (winSize.height + 150) / PTM_RATIO; 
         b2Vec2 lowerLeftCorner = b2Vec2(0, 0);
         b2Vec2 lowerRightCorner = b2Vec2(widthInMeters, 0); 
         b2Vec2 upperLeftCorner = b2Vec2(0, heightInMeters);
@@ -280,11 +279,12 @@ SimpleAudioEngine *soundEngine;
                 if (bird.flying == YES) {
                     b2Vec2 force = b2Vec2(0, 15.0f);
                     b->ApplyForce(force, b->GetWorldCenter());
-                    if (arc4random()%100 < 50) {
-                        b2Vec2 force = b2Vec2(5.0f, 0);
+                    int rnd = arc4random()%100;
+                    if (rnd < 25) {
+                        b2Vec2 force = b2Vec2(5.0f, .0f);
                         b->ApplyForce(force, b->GetWorldCenter());
-                    } else {
-                        b2Vec2 force = b2Vec2(-5.0f, 0);
+                    } else if (rnd < 50) {
+                        b2Vec2 force = b2Vec2(-5.0f, .0f);
                         b->ApplyForce(force, b->GetWorldCenter());
                     }
                 }
@@ -410,15 +410,25 @@ SimpleAudioEngine *soundEngine;
 }
 
 -(void)addBirds {
+    
     ActionLevel *curLevel = (ActionLevel *) [GameState sharedState].curLevel;
-    for (NSNumber *birdIdNumber in curLevel.spawnIds) {
-        int birdId = birdIdNumber.intValue;
-        Bird *bird = [Bird birdWithType:(BirdType)birdId];
+    if ([curLevel.spawnIds count] > 0) {
+        NSNumber *birdType = [curLevel.spawnIds lastObject];
+        Bird *bird = [Bird birdWithType:(BirdType)birdType.intValue];
         [bird flight:YES];
-        if (bird != nil) {
-            [self addBird:bird];
-        }
+        [self addBird:bird];
+        [curLevel.spawnIds removeLastObject];
+        NSLog(@"%d", [curLevel.spawnIds count]);
     }
+    
+//    for (NSNumber *birdIdNumber in curLevel.spawnIds) {
+//        int birdId = birdIdNumber.intValue;
+//        Bird *bird = [Bird birdWithType:(BirdType)birdId];
+//        [bird flight:YES];
+//        if (bird != nil) {
+//            [self addBird:bird];
+//        }
+//    }
 }
 
 -(void)gameLogic:(ccTime)dt {
@@ -434,23 +444,21 @@ SimpleAudioEngine *soundEngine;
 		[soundEngine rewindBackgroundMusic];
 		[soundEngine playBackgroundMusic:@"game.caf"];
         self.levelBegin = now;
-        return;
+        
     } else {
-        if (now - _levelBegin >= curLevel.spawnSeconds) {
             
-            if (_birds.count < 2) {
-                for (CCSprite *sprt in _batchNode.children) {
-                    if (sprt.tag == 3) {
-                        [_batchNode removeChild:sprt cleanup:YES];
-                    }
+        if (_birds.count < 1) {
+            // Remove animations (fight, love)
+            for (CCSprite *sprt in _batchNode.children) {
+                if (sprt.tag == 3) {
+                    [_batchNode removeChild:sprt cleanup:YES];
                 }
-                _inLevel = FALSE;
-                [self fadeOutMusic];
-                [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
-                AppDelegate*delegate = [[UIApplication sharedApplication] delegate];
-                [delegate launchNextLevel];
-            } 
-            return;            
+            }
+            _inLevel = FALSE;
+            [self fadeOutMusic];
+            [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
+            AppDelegate*delegate = [[UIApplication sharedApplication] delegate];
+            [delegate launchNextLevel];
         }
     }
     
@@ -487,6 +495,8 @@ SimpleAudioEngine *soundEngine;
                 md.target = locationWorld;
                 md.collideConnected = true;
                 md.maxForce = 1000.0f * b->GetMass();
+                
+                ((Bird*)b->GetUserData()).flying = YES;
                 
                 _mouseJoint = (b2MouseJoint *)_world->CreateJoint(&md);
                 b->SetAwake(true);

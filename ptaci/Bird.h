@@ -8,6 +8,8 @@
 
 #import "cocos2d.h"
 
+#define BIRD_TAG 1
+
 typedef enum {
     BirdTypeRed,
     BirdTypeBlue

@@ -22,12 +22,12 @@
 
 
 @interface ActionLevel : Level {
-    float _spawnSeconds;
     float _spawnRate;
+    int _minScore;
     NSMutableArray *_spawnIds;
     BOOL _isFinalLevel;
 }
-@property (nonatomic, assign) float spawnSeconds;
+@property (nonatomic, assign) int minScore;
 @property (nonatomic, assign) float spawnRate;
 @property (nonatomic, retain) NSMutableArray *spawnIds;
 @property (nonatomic, assign) BOOL isFinalLevel;

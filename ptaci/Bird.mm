@@ -110,7 +110,7 @@
             break;
             
         case BirdTypeRed:
-            bird = [[[super alloc] initWithSpriteFrameName:@"blue-beak1.png"] autorelease];
+            bird = [[[super alloc] initWithSpriteFrameName:@"red-wing1.png"] autorelease];
             bird.weight = 1.0f;
             bird.minMoveDuration = 3;
             bird.maxMoveDuration = 5;
