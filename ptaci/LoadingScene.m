@@ -55,7 +55,7 @@ SimpleAudioEngine *soundEngine;
         
         // Show Default.png until fully loaded
         CGSize winSize = [CCDirector sharedDirector].winSize;
-        self.defaultImage = [CCSprite spriteWithFile:@"DefaultLandscape.png"];
+        self.defaultImage = [CCSprite spriteWithFile:@"Default.png"];
         _defaultImage.position = ccp(winSize.width/2, winSize.height/2);
         [self addChild:_defaultImage];
         
