@@ -141,6 +141,9 @@ SimpleAudioEngine *soundEngine;
         _contactListener = new BirdsContactListener();
         _world->SetContactListener(_contactListener);
 		
+		// accelerometer
+		self.isAccelerometerEnabled = YES;
+		
         // Create rope
         [self createRope];
     }
@@ -531,6 +534,14 @@ SimpleAudioEngine *soundEngine;
         _world->DestroyJoint(_mouseJoint);
         _mouseJoint = NULL;
     }
+}
+
+- (void)accelerometer:(UIAccelerometer *)accelerometer didAccelerate:(UIAcceleration *)acceleration {
+	
+	b2Vec2 originGravity = _world->GetGravity();
+    b2Vec2 gravity(-acceleration.y * 5, originGravity.y);
+    _world->SetGravity(gravity);
+	
 }
 
 - (void)createRope {
