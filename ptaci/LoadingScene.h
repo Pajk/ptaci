@@ -17,7 +17,6 @@
     CCSprite *_defaultImage;
     CCSpriteBatchNode *_batchNode;
     CCSprite *_main_bkgrnd;
-    CCSprite *_main_title;
     CCSprite *_tapToCont;
     CCSprite *_loading;
     BOOL _isLoading;
@@ -28,7 +27,6 @@
 @property (nonatomic, assign) CCSprite *defaultImage;
 @property (nonatomic, assign) CCSpriteBatchNode *batchNode;
 @property (nonatomic, assign) CCSprite *main_bkgrnd;
-@property (nonatomic, assign) CCSprite *main_title;
 @property (nonatomic, assign) CCSprite *tapToCont;
 @property (nonatomic, assign) CCSprite *loading;
 @property (nonatomic, assign) BOOL isLoading;

@@ -54,13 +54,13 @@
         [self addChild:_label];
         
         // Add "tap to continue" sprite
-        self.tapToCont = [CCSprite spriteWithSpriteFrameName:@"Continue_text.png"];
+        self.tapToCont = [CCSprite spriteWithSpriteFrameName:@"continue.png"];
         _tapToCont.position = ccp(winSize.width / 2, _tapToCont.contentSize.height/2 + 30);
         _tapToCont.visible = NO;
         [_batchNode addChild:_tapToCont];
         
         // Add "new game" sprite
-        self.spriteNewGame = [CCSprite spriteWithSpriteFrameName:@"Newgame_text.png"];
+        self.spriteNewGame = [CCSprite spriteWithSpriteFrameName:@"play.png"];
         _spriteNewGame.position = ccp(winSize.width / 2, _tapToCont.contentSize.height/2 + 30);
         _spriteNewGame.visible = NO;
         [_batchNode addChild:_spriteNewGame];

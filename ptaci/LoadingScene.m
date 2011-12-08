@@ -29,7 +29,6 @@
 @synthesize defaultImage = _defaultImage;
 @synthesize batchNode = _batchNode;
 @synthesize main_bkgrnd = _main_bkgrnd;
-@synthesize main_title = _main_title;
 @synthesize tapToCont = _tapToCont;
 @synthesize loading = _loading;
 @synthesize isLoading = _isLoading;
@@ -98,8 +97,8 @@ SimpleAudioEngine *soundEngine;
         
         // Add "tap to continue"
         CGSize winSize = [CCDirector sharedDirector].winSize;
-        self.tapToCont = [CCSprite spriteWithSpriteFrameName:@"Continue_text.png"];
-        _tapToCont.position = ccp(winSize.width/2, _tapToCont.contentSize.height/2 + 30);
+        self.tapToCont = [CCSprite spriteWithSpriteFrameName:@"continue.png"];
+        _tapToCont.position = ccp(winSize.width/2, winSize.height/2);
         [_batchNode addChild:_tapToCont];
         
         // Animate the "tap to continue" much the same way we did the "loading" so user notices...
@@ -143,14 +142,8 @@ SimpleAudioEngine *soundEngine;
     _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
     [_batchNode addChild:_main_bkgrnd];
     
-    // Add title to scene
-    static int MAIN_TITLE_TOP_MARGIN = 20;
-    self.main_title = [CCSprite spriteWithSpriteFrameName:@"Main_title.png"];
-    _main_title.position = ccp(winSize.width/2, winSize.height - _main_title.contentSize.height/2 - MAIN_TITLE_TOP_MARGIN);
-    [_batchNode addChild:_main_title];
-    
     // Add "Loading..." to scene
-    self.loading = [CCSprite spriteWithSpriteFrameName:@"Loading_text.png"];
+    self.loading = [CCSprite spriteWithSpriteFrameName:@"loading.png"];
     _loading.position = ccp(winSize.width/2, _loading.contentSize.height/2 + 30);
     [_batchNode addChild:_loading];
     
