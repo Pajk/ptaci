@@ -176,11 +176,11 @@ SimpleAudioEngine *soundEngine;
     [self schedule:@selector(update:)];
     [self schedule:@selector(gameLogic:) interval:0.1f];
     
-    // Register touch events
-    [self registerWithTouchDispatcher];
-    
     // Render score
     [self updateScore];
+    
+    // Register touch events
+    [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
 }
 
 - (void)loveEventFor:(Bird *)birdA with:(Bird *)birdB {
@@ -459,8 +459,8 @@ SimpleAudioEngine *soundEngine;
     
     _inLevel = FALSE;
     [self fadeOutMusic];
-    [[CCTouchDispatcher sharedDispatcher] removeAllDelegates];
     
+    [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
     AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
     ActionLevel *curLevel = (ActionLevel *) [GameState sharedState].curLevel;        
     if (curLevel.isFinalLevel) {
@@ -501,11 +501,6 @@ SimpleAudioEngine *soundEngine;
         [self addBirds];
         self.lastTimeBirdAdded = now;
     }
-}
-
-- (void)registerWithTouchDispatcher
-{
-    [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
 }
 
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {

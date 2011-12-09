@@ -41,7 +41,7 @@
         _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
         [_batchNode addChild:_main_bkgrnd];
         
-        // Add a main menu
+        // Add new game button
         CCSprite *newGameSprite = [CCSprite spriteWithSpriteFrameName:@"play.png"];
         CCMenuItem *newGameItem = [CCMenuItemSprite itemFromNormalSprite:newGameSprite selectedSprite:nil target:self selector:@selector(newGameSpriteTapped:)];
         CCMenu *menu = [CCMenu menuWithItems:newGameItem, nil];

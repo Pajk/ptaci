@@ -105,14 +105,15 @@
     _curStoryIndex = 0;
     [self displayCurStoryString];
     
-    [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
-    
     // Animate "tap to continue"
     [_tapToCont runAction:[CCRepeatForever actionWithAction:
                            [CCSequence actions:
                             [CCFadeOut actionWithDuration:2.0f],
                             [CCFadeIn actionWithDuration:2.0f],
                             nil]]];
+    
+    // Register with touch dispatcher
+    [[CCTouchDispatcher sharedDispatcher] addTargetedDelegate:self priority:0 swallowsTouches:YES];
 }
 
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
@@ -121,6 +122,7 @@
     if (_curStoryIndex < curLevel.storyStrings.count || _curStoryIndex < curLevel.backgroundNames.count) {
         [self displayCurStoryString];
     } else {
+        [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
         AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         if (curLevel.isGameOver) {
             [delegate launchMainMenu];
