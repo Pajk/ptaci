@@ -16,7 +16,6 @@
 		2E14D1801487CA6A00CBD63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14D17F1487CA6A00CBD63C /* Foundation.framework */; };
 		2E14D1821487CA6A00CBD63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E14D1811487CA6A00CBD63C /* CoreGraphics.framework */; };
 		2E14D1881487CA6A00CBD63C /* fps_images.png in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D1871487CA6A00CBD63C /* fps_images.png */; };
-		2E14D1971487CA6A00CBD63C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 2E14D1961487CA6A00CBD63C /* iTunesArtwork */; };
 		2E14D19C1487CA6A00CBD63C /* CCAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D19B1487CA6A00CBD63C /* CCAction.m */; };
 		2E14D19F1487CA6A00CBD63C /* CCActionCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D19E1487CA6A00CBD63C /* CCActionCamera.m */; };
 		2E14D1A21487CA6A00CBD63C /* CCActionEase.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E14D1A11487CA6A00CBD63C /* CCActionEase.m */; };
@@ -200,7 +199,6 @@
 		2E14D1811487CA6A00CBD63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2E14D1871487CA6A00CBD63C /* fps_images.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fps_images.png; path = Resources/fps_images.png; sourceTree = "<group>"; };
 		2E14D1951487CA6A00CBD63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = Resources/Info.plist; sourceTree = "<group>"; };
-		2E14D1961487CA6A00CBD63C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; name = iTunesArtwork; path = Resources/iTunesArtwork; sourceTree = "<group>"; };
 		2E14D19A1487CA6A00CBD63C /* CCAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCAction.h; path = libs/cocos2d/CCAction.h; sourceTree = "<group>"; };
 		2E14D19B1487CA6A00CBD63C /* CCAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CCAction.m; path = libs/cocos2d/CCAction.m; sourceTree = "<group>"; };
 		2E14D19D1487CA6A00CBD63C /* CCActionCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCActionCamera.h; path = libs/cocos2d/CCActionCamera.h; sourceTree = "<group>"; };
@@ -640,7 +638,6 @@
 				B9744C841490BAB20064C6E1 /* select.wav */,
 				2E14D1871487CA6A00CBD63C /* fps_images.png */,
 				2E14D1951487CA6A00CBD63C /* Info.plist */,
-				2E14D1961487CA6A00CBD63C /* iTunesArtwork */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1185,7 +1182,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E14D1881487CA6A00CBD63C /* fps_images.png in Resources */,
-				2E14D1971487CA6A00CBD63C /* iTunesArtwork in Resources */,
 				B9744C611490AE570064C6E1 /* Default.png in Resources */,
 				B9744C641490AE5B0064C6E1 /* Default@2x.png in Resources */,
 				B9744C661490B4290064C6E1 /* Icon.png in Resources */,

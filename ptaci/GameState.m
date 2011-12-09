@@ -52,7 +52,7 @@ static GameState *_sharedState = nil;
     
     // Story 2
     StoryLevel *story2 = [[[StoryLevel alloc] init] autorelease];
-    [story2.storyStrings addObject:@"Level 2" ];
+    [story2.storyStrings addObject:@"Level 2\nPeep peep" ];
     [_levels addObject:story2];
     
     // Level 2
@@ -83,7 +83,7 @@ static GameState *_sharedState = nil;
     
     // Story 3
     StoryLevel *story3 = [[[StoryLevel alloc] init] autorelease];
-    [story3.storyStrings addObject:@"Level 3\nYou are bird master!"]; 
+    [story3.storyStrings addObject:@"Level 3\nPeep peep peep"]; 
     [_levels addObject:story3];
     
     // Level 3
