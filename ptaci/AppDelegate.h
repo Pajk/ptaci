@@ -3,16 +3,10 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/1/11.
-//  Copyright __MyCompanyName__ 2011. All rights reserved.
+//  Copyright FIT VUT 2011. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-
-//#define CGROUP_TOTAL                2
-//
-//#define SND_ID_BACKGROUND_MUSIC     0
-//#define SND_ID_BATTLE_EFFECT        1
-//#define SND_ID_LOVE_EFFECT          2
 
 @class LoadingScene;
 @class MainMenuScene;

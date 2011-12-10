@@ -3,22 +3,21 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/3/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 FIT VUT. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface Level : NSObject {
-}
+@interface Level : NSObject {}
 @end
 
 @interface StoryLevel : Level {
     NSMutableArray *_storyStrings;
+    NSMutableArray *_storyImages;
     BOOL _isGameOver;
-    NSMutableArray *_backgroundNames;
 }
 @property (nonatomic, retain) NSMutableArray *storyStrings;
-@property (nonatomic, retain) NSMutableArray *backgroundNames;
+@property (nonatomic, retain) NSMutableArray *storyImages;
 @property (nonatomic, assign) BOOL isGameOver;
 @end
 
@@ -26,11 +25,11 @@
 @interface ActionLevel : Level {
     float _spawnRate;
     int _minScore;
-    NSMutableArray *_spawnIds;
     BOOL _isFinalLevel;
+    NSMutableArray *_spawnIds;
 }
-@property (nonatomic, assign) int minScore;
 @property (nonatomic, assign) float spawnRate;
-@property (nonatomic, retain) NSMutableArray *spawnIds;
+@property (nonatomic, assign) int minScore;
 @property (nonatomic, assign) BOOL isFinalLevel;
+@property (nonatomic, retain) NSMutableArray *spawnIds;
 @end

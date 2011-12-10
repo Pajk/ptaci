@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/1/11.
-//  Copyright __MyCompanyName__ 2011. All rights reserved.
+//  Copyright FIT VUT 2011. All rights reserved.
 //
 
 #import "ActionScene.h"
@@ -70,7 +70,6 @@
 @synthesize levelBegin      = _levelBegin;
 @synthesize lastTimeBirdAdded = _lastTimeBirdAdded;
 @synthesize inLevel         = _inLevel;
-@synthesize score           = _score;
 
 SimpleAudioEngine *soundEngine;
 
@@ -151,7 +150,7 @@ SimpleAudioEngine *soundEngine;
         [self createRope];
         
         // Set score
-        _score = 0;
+        [GameState sharedState].score = 0;
     }
     return self;
 }
@@ -184,7 +183,7 @@ SimpleAudioEngine *soundEngine;
 }
 
 - (void)loveEventFor:(Bird *)birdA with:(Bird *)birdB {
-    self.score++;
+    [GameState sharedState].score += 1;
     int rnd = arc4random()%3;
     if (rnd == 0) {
         [soundEngine playEffect:@"love1.wav" pitch:1.0f pan:0.0f gain:1.0f];
@@ -220,8 +219,8 @@ SimpleAudioEngine *soundEngine;
 }
 
 - (void)battleEventFor:(Bird *)birdA with:(Bird *)birdB {
-    if (self.score > 0) {
-        self.score--;
+    if ([GameState sharedState].score > 0) {
+        [GameState sharedState].score -= 1;
     }
     if (arc4random()%2) {
         [soundEngine playEffect:@"fight1.wav" pitch:1.0f pan:0.0f gain:1.0f];
@@ -264,15 +263,15 @@ SimpleAudioEngine *soundEngine;
         } else if (rnd == 10) {
             [bird stopAllActions];
             [bird beak:TRUE];
-        } else if (rnd == 20) {
+        } else if (rnd == 20 || rnd == 21) {
             bird.flipX = YES;
-        } else if (rnd == 30) {
+        } else if (rnd == 30 || rnd == 31) {
             bird.flipX = NO;
         }
     }
     
     // Advance the physics world by one step, using fixed time steps
-//    float timeStep = 0.03f;
+    // float timeStep = 0.03f;
     int32 velocityIterations = 8;
     int32 positionIterations = 8;
     _world->Step(dt, velocityIterations, positionIterations);
@@ -286,16 +285,12 @@ SimpleAudioEngine *soundEngine;
             if (sprite.tag == BIRD_TAG) {
                 Bird * bird = (Bird *)sprite;
                 if (bird.flying == YES) {
-                    b2Vec2 force = b2Vec2(0, 15.0f);
-                    b->ApplyForce(force, b->GetWorldCenter());
-                    int rnd = arc4random()%100;
-                    if (rnd < 25) {
-                        b2Vec2 force = b2Vec2(5.0f, .0f);
-                        b->ApplyForce(force, b->GetWorldCenter());
-                    } else if (rnd < 50) {
-                        b2Vec2 force = b2Vec2(-5.0f, .0f);
-                        b->ApplyForce(force, b->GetWorldCenter());
+                    float inX = 1.0f;
+                    if (bird.flyLeft) {
+                        inX = -inX;
                     }
+                    b2Vec2 force = b2Vec2(inX, 20.0f);
+                    b->ApplyForce(force, b->GetWorldCenter());
                 }
             }
         }        
@@ -366,6 +361,9 @@ SimpleAudioEngine *soundEngine;
 
 -(void)addBird:(Bird *)bird {
     
+    // Let bird fly
+    [bird flight:YES];
+    
     // Determine where to spawn the bird along the X axis
     int actualX, positionTaken, diff, tries = 0;
     int minX = bird.contentSize.width/2;
@@ -386,6 +384,11 @@ SimpleAudioEngine *soundEngine;
 
     } while (tries < 10 && positionTaken);
     
+    // Set bird orientation
+    if(actualX > worldWidth/2) {
+        bird.flyLeft = YES;
+        bird.flipX = YES;
+    }
     
     // Create the bird slightly off-screen along the right edge,
     // and along a random position along the Y axis as calculated above
@@ -425,7 +428,6 @@ SimpleAudioEngine *soundEngine;
     if ([curLevel.spawnIds count] > 0) {
         NSNumber *birdType = [curLevel.spawnIds lastObject];
         Bird *bird = [Bird birdWithType:(BirdType)birdType.intValue];
-        [bird flight:YES];
         [self addBird:bird];
         [curLevel.spawnIds removeLastObject];
     } else {
@@ -575,18 +577,18 @@ SimpleAudioEngine *soundEngine;
 	static float segmentWidth = 24.0f;
 	static float segmentHeight = 5.0f;
 	
-//	NSLog(@"sirka sveta %f", worldWidth);
-//	NSLog(@"segment size %f %f", segmentWidth, segmentHeight);
-//	NSLog(@"pocet potrebnych segmentu %f", worldWidth/segmentWidth);
+	// NSLog(@"sirka sveta %f", worldWidth);
+	// NSLog(@"segment size %f %f", segmentWidth, segmentHeight);
+	// NSLog(@"pocet potrebnych segmentu %f", worldWidth/segmentWidth);
 	
     b2PolygonShape shape;
     shape.SetAsBox(segmentWidth/PTM_RATIO/2, segmentHeight/PTM_RATIO/2);
     
     b2FixtureDef fd;
     fd.shape = &shape;
-    fd.density = 1.0f;
-//    fd.friction = 0.5f;
-//    fd.restitution = 0.01f;
+    fd.density = 10.0f;
+    // fd.friction = 0.5f;
+    // fd.restitution = 0.01f;
 	
 	b2BodyDef fixDef;
 	fixDef.type = b2_staticBody;
@@ -596,12 +598,7 @@ SimpleAudioEngine *soundEngine;
     
     b2RevoluteJointDef jd;
     jd.collideConnected = false;
-//    tohle muzem omezit, ale pak se to musi prenastavit pro posledni blok
-//    jd.lowerAngle = 0.0f * b2_pi;
-//    jd.upperAngle = 0.0f * b2_pi;
-//    jd.lowerAngle = -0.5f * b2_pi; // -90 degrees
-//    jd.upperAngle = 0.25f * b2_pi; // 45 degrees
-//    jd.enableLimit = true;
+    jd.enableLimit = true;
     jd.maxMotorTorque = 1000.0f;
     jd.motorSpeed = 0.0f;
     jd.enableMotor = true;
@@ -625,8 +622,6 @@ SimpleAudioEngine *soundEngine;
 		jd.Initialize(prevBody, body, anchor);
 		_world->CreateJoint(&jd);
         
-		// NSLog(@"anchor point %d %d", i * PTM_RATIO, ROPE_HEIGHT);
-        
         prevBody = body;
     }
     
@@ -648,7 +643,7 @@ SimpleAudioEngine *soundEngine;
 }
 
 - (void)updateScore {
-    [_hud setStatusString:[NSString stringWithFormat:@"%d", _score]];
+    [_hud setStatusString:[NSString stringWithFormat:@"%d", [GameState sharedState].score]];
 }
 
 -(void) fadeOutMusic {

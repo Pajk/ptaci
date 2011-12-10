@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/1/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 FIT VUT. All rights reserved.
 //
 
 #import "cocos2d.h"
@@ -17,19 +17,20 @@ typedef enum {
 
 @interface Bird : CCSprite {
     BirdType _birdType;
-    float _weight;
     CCAction *_flightAction;
     CCAction *_beakAction;
     CCAction *_eyeAction;
     BOOL _flying;
+    BOOL _flyLeft;
+    float _weight;
 }
-
 @property (nonatomic, assign) BirdType birdType;
-@property (nonatomic, assign) float weight;
 @property (nonatomic, retain) CCAction *flightAction;
 @property (nonatomic, retain) CCAction *beakAction;
 @property (nonatomic, retain) CCAction *eyeAction;
 @property (nonatomic, assign) BOOL flying;
+@property (nonatomic, assign) BOOL flyLeft;
+@property (nonatomic, assign) float weight;
 
 - (void)initActions;
 - (Bird *)flight:(BOOL)state;

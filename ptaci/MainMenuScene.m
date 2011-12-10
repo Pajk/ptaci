@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/3/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 FIT VUT. All rights reserved.
 //
 
 #import "MainMenuScene.h"
@@ -26,6 +26,7 @@
 @implementation MainMenuLayer
 @synthesize batchNode = _batchNode;
 @synthesize main_bkgrnd = _main_bkgrnd;
+@synthesize main_birds = _main_birds;
 
 - (id)init {
     
@@ -37,9 +38,14 @@
         
         // Add main background to scene
         CGSize winSize = [CCDirector sharedDirector].winSize;
-        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:@"Menu_background.png"];
+        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:@"menu_background.png"];
         _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
         [_batchNode addChild:_main_bkgrnd];
+        
+        // Add birds sprites to scene
+        self.main_birds = [CCSprite spriteWithSpriteFrameName:@"menu_birds.png"];
+        _main_birds.position = ccp(winSize.width/2, winSize.height/2);
+        [_batchNode addChild:_main_birds];
         
         // Add new game button
         CCSprite *newGameSprite = [CCSprite spriteWithSpriteFrameName:@"play.png"];

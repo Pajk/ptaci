@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/3/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 FIT VUT. All rights reserved.
 //
 
 #import "GameState.h"
@@ -13,10 +13,11 @@
 
 @implementation GameState
 
-@synthesize levels = _levels;
-@synthesize curLevelIndex = _curLevelIndex;
-@synthesize curLevel = _curLevel;
-@synthesize happyEnding = _happyEnding;
+@synthesize levels          = _levels;
+@synthesize curLevelIndex   = _curLevelIndex;
+@synthesize curLevel        = _curLevel;
+@synthesize happyEnding     = _happyEnding;
+@synthesize score           = _score;
 
 static GameState *_sharedState = nil;
 
@@ -30,8 +31,9 @@ static GameState *_sharedState = nil;
 - (void)createLevels {
     // Story 1
     StoryLevel *story1 = [[[StoryLevel alloc] init] autorelease];
-    [story1.backgroundNames addObject:@"help_ok.png"];
-    [story1.backgroundNames addObject:@"help_wrong.png"];
+    [story1.storyImages addObject:@"help_ok.png"];
+    [story1.storyImages addObject:@"help_wrong.png"];
+    [story1.storyImages addObject:@"rotate.png"];
     [_levels addObject:story1];
     
     // Level 1
@@ -168,18 +170,20 @@ static GameState *_sharedState = nil;
     if ((self = [super init])) {
         
         self.levels = [[[NSMutableArray alloc] init] autorelease];
-        
+
         [self createLevels];
         
-        // Happy ending
+        // Create happy ending level
         StoryLevel *happyEnding = [[[StoryLevel alloc] init] autorelease];
-        [happyEnding.storyStrings addObject:@"You killed all birdoos! Poor birdoos!\nShame on you:("];       
+        // Story string is added in app delegate because of the score
+        [happyEnding.storyImages addObject:@"menu_birds.png"];   
         happyEnding.isGameOver = YES;
         self.happyEnding = happyEnding;
     }
     return self;
 }
 
+// Rest game state, recreate levels, set first as current
 - (void)reset {
     [_levels removeAllObjects];
     [self createLevels];
@@ -187,16 +191,22 @@ static GameState *_sharedState = nil;
     self.curLevel = [_levels objectAtIndex:_curLevelIndex];
 }
 
+// Set next level as current
 - (void)nextLevel {
     self.curLevelIndex++;
     if (_curLevelIndex < _levels.count) {
         self.curLevel = [_levels objectAtIndex:_curLevelIndex];
-    } 
-    
+    }
 }
 
 - (void) dealloc {
     _sharedState = nil;
+    [_happyEnding release];
+    _happyEnding = nil;
+    [_levels release];
+    _levels = nil;
+    [_curLevel release];
+    _curLevel = nil;
     [super dealloc];
 }
 

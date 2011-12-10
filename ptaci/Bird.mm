@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/1/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 FIT VUT. All rights reserved.
 //
 
 #import "Bird.h"
@@ -11,13 +11,15 @@
 
 @implementation Bird
 
-@synthesize birdType = _birdType;
-@synthesize weight = _weight;
+@synthesize birdType        = _birdType;
+@synthesize weight          = _weight;
 @synthesize flightAction    = _flightAction;
 @synthesize beakAction      = _beakAction;
 @synthesize eyeAction       = _eyeAction;
 @synthesize flying          = _flying;
+@synthesize flyLeft         = _flyLeft;
 
+// Create all bird animations
 - (void)initActions {
     
     NSString *color = @"blue";
@@ -95,6 +97,7 @@
     return self;
 }
 
+// Create new bird object with given type
 + (Bird *)birdWithType:(BirdType)birdType {
     Bird *bird = nil;
     switch (birdType) {
@@ -109,6 +112,7 @@
             break;
 
         default:
+            return nil;
             break;
     }
     bird.birdType = birdType;

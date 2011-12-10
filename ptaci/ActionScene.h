@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/1/11.
-//  Copyright __MyCompanyName__ 2011. All rights reserved.
+//  Copyright FIT VUT 2011. All rights reserved.
 //
 
 
@@ -21,31 +21,30 @@
 
 @interface ActionLayer : CCLayer {
     CCSpriteBatchNode *_batchNode;
-    CCSprite *_background;
-    NSMutableArray *_birds;
-    double _levelBegin;
-    double _lastTimeBirdAdded;
-    BOOL _inLevel;
-    BOOL _levelEnd;
     HudLayer *_hud;
-    int _score;
+    CCSprite *_background;
+    double  _levelBegin;
+    double  _lastTimeBirdAdded;
+    BOOL    _inLevel;
+    BOOL    _levelEnd;
+
+    CGSize winSize;
+    CGFloat worldWidth;
+    NSMutableArray *_birds;
     
     b2World *_world;
     b2Body *_groundBody;
     b2Fixture *_bottomFixture;
     b2MouseJoint *_mouseJoint;
     BirdsContactListener *_contactListener;
-    CGSize winSize;
-    CGFloat worldWidth;
 }
 @property (nonatomic, assign) CCSpriteBatchNode *batchNode;
 @property (nonatomic, assign) CCSprite *background;
 @property (nonatomic, retain) NSMutableArray *birds;
-@property (nonatomic, assign) BOOL levelEnd;
 @property (nonatomic, assign) double levelBegin;
 @property (nonatomic, assign) double lastTimeBirdAdded;
+@property (nonatomic, assign) BOOL levelEnd;
 @property (nonatomic, assign) BOOL inLevel;
-@property (nonatomic, assign) int score;
 
 - (id) initWithHud:(HudLayer *)hudLayer;
 @end

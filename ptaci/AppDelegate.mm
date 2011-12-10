@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/1/11.
-//  Copyright __MyCompanyName__ 2011. All rights reserved.
+//  Copyright FIT VUT 2011. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -25,28 +25,6 @@
 @synthesize actionScene = _actionScene;
 @synthesize window;
 
-- (void) removeStartupFlicker
-{
-	//
-	// THIS CODE REMOVES THE STARTUP FLICKER
-	//
-	// Uncomment the following code if you Application only supports landscape mode
-	//
-#if GAME_AUTOROTATION == kGameAutorotationUIViewController
-	
-	//	CC_ENABLE_DEFAULT_GL_STATES();
-	//	CCDirector *director = [CCDirector sharedDirector];
-	//	CGSize size = [director winSize];
-	//	CCSprite *sprite = [CCSprite spriteWithFile:@"Default.png"];
-	//	sprite.position = ccp(size.width/2, size.height/2);
-	//	sprite.rotation = -90;
-	//	[sprite visit];
-	//	[[director openGLView] swapBuffers];
-	//	CC_ENABLE_DEFAULT_GL_STATES();
-	
-#endif // GAME_AUTOROTATION == kGameAutorotationUIViewController	
-}
-
 - (void) applicationDidFinishLaunching:(UIApplication*)application
 {
     // Sound initialization
@@ -55,10 +33,8 @@
 	// Init the window
 	window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
-	// Try to use CADisplayLink director
-	// if it fails (SDK < 3.1) use the default director
-	if( ! [CCDirector setDirectorType:kCCDirectorTypeDisplayLink] )
-		[CCDirector setDirectorType:kCCDirectorTypeDefault];
+	// Use CADisplayLink director
+	[CCDirector setDirectorType:kCCDirectorTypeDisplayLink];
 	
 	CCDirector *director = [CCDirector sharedDirector];
 	
@@ -67,13 +43,11 @@
 	//  1. Create a RGB565 format. Alternative: RGBA8
 	//	2. depth format of 0 bit. Use 16 or 24 bit for 3d effects, like CCPageTurnTransition
 	//
-	//
 	EAGLView *glView = [EAGLView viewWithFrame:[window bounds]
-								   pixelFormat:kEAGLColorFormatRGB565	// kEAGLColorFormatRGBA8
-								   depthFormat:0						// GL_DEPTH_COMPONENT16_OES
-						];
+								   pixelFormat:kEAGLColorFormatRGB565
+								   depthFormat:0];
 	
-	// attach the openglView to the director
+	// Attach the openglView to the director
 	[director setOpenGLView:glView];
 	
 	// Enables High Res mode (Retina Display) on iPhone 4 and maintains low res on all other devices
@@ -84,10 +58,10 @@
 	[director setDeviceOrientation:kCCDeviceOrientationLandscapeLeft];
 	
     // FPS
-	[director setAnimationInterval:1.0/60];
+	[director setAnimationInterval:1.0/50];
     
     // Show FPS on screen
-	[director setDisplayFPS:YES];
+	[director setDisplayFPS:NO];
 	
 	// Make the OpenGLView a child of the view controller
 	[director setOpenGLView:glView];
@@ -104,17 +78,13 @@
     // Default: kCCTexture2DPixelFormat_RGBA8888
 	[CCTexture2D setDefaultAlphaPixelFormat:kCCTexture2DPixelFormat_RGBA8888];
 	
-	// Removes the startup flicker
-	[self removeStartupFlicker];
-	
     // Alocate and run the loading scene
     self.loadingScene = [[[LoadingScene alloc] init] autorelease];		
 	[director runWithScene: _loadingScene];
 }
 
-
+// Preload all scenes from game, they are initialized only once (here)
 - (void)loadScenes {
-    
     // Create a shared opengl context so any textures can be shared with the main content
     EAGLContext *k_context = [[[EAGLContext alloc]
                                initWithAPI:kEAGLRenderingAPIOpenGLES1
@@ -126,10 +96,12 @@
     self.actionScene = [[[ActionScene alloc] init] autorelease];
 }
 
+// Show main menu using fade transition effect
 - (void)launchMainMenu {
     [[CCDirector sharedDirector] replaceScene:[CCTransitionFade transitionWithDuration:0.5f scene:_mainMenuScene]];
 }
 
+// Start current level, it could be game or story level
 - (void)launchCurLevel {
     Level *curLevel = [[GameState sharedState] curLevel];
     if ([curLevel isKindOfClass:[StoryLevel class]]) {
@@ -139,17 +111,23 @@
     }
 }
 
+// Set next level as current and start it
 - (void)launchNextLevel {
     [[GameState sharedState] nextLevel];
     [self launchCurLevel];
 }
 
+// Reset game state and start new game
 - (void)launchNewGame { 
     [[GameState sharedState] reset];
     [self launchCurLevel];    
 }
 
+// Show ending story level
 - (void)launchHappyEnding {
+    [[(StoryLevel*)[GameState sharedState].happyEnding storyStrings] removeAllObjects];
+    [[(StoryLevel*)[GameState sharedState].happyEnding storyStrings] addObject:[NSString stringWithFormat:@"Pipipiip PIPIIIP!!!\n piiIIP.\nScore: %d", [GameState sharedState].score]];
+    
     [GameState sharedState].curLevel = [GameState sharedState].happyEnding;
     [self launchCurLevel];
 }

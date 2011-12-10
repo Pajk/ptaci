@@ -3,7 +3,7 @@
 //  ptaci
 //
 //  Created by Pavel Pokorny on 12/3/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 FIT VUT. All rights reserved.
 //
 
 
@@ -29,6 +29,7 @@
 
 @synthesize batchNode       = _batchNode;
 @synthesize main_bkgrnd     = _main_bkgrnd;
+@synthesize story_image     = _story_image;
 @synthesize label           = _label;
 @synthesize curStoryIndex   = _curStoryIndex;
 @synthesize tapToCont       = _tapToCont;
@@ -60,7 +61,12 @@
         self.spriteNewGame = [CCSprite spriteWithSpriteFrameName:@"play.png"];
         _spriteNewGame.position = ccp(winSize.width / 2, _tapToCont.contentSize.height/2 + 30);
         _spriteNewGame.visible = NO;
-        [_batchNode addChild:_spriteNewGame];
+        [_batchNode addChild:_spriteNewGame z:10];
+        
+        // Add background
+        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:@"menu_background.png"];
+        _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
+        [_batchNode addChild:_main_bkgrnd z:3];
     }
     return self;
 }
@@ -69,26 +75,32 @@
     
     StoryLevel *curLevel = (StoryLevel *)[GameState sharedState].curLevel;
     
+    // Set story string, could be some simple story but its just pipiiip
+    // becouse we dont understand those birds:). If story string is not set, 
+    // show empty label, do not hide or destroy it, its reused in others story sreens
     if (curLevel.storyStrings.count > 0) {
         NSString *curStoryString = [curLevel.storyStrings objectAtIndex:_curStoryIndex];
         [_label setString:curStoryString];
+    } else {
+        [_label setString:@""];
     }
     
-    // Set story level background
-    if (_main_bkgrnd) {
-        [_batchNode removeChild:_main_bkgrnd cleanup:YES];
+    // Remove previous story image if exists
+    if (_story_image) {
+        [_batchNode removeChild:_story_image cleanup:YES];
+        _story_image = nil;
     }
-    CGSize winSize = [CCDirector sharedDirector].winSize;
-    if (curLevel.backgroundNames.count > _curStoryIndex) {
-        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:[curLevel.backgroundNames objectAtIndex:_curStoryIndex]];
-        
-    } else {
-        self.main_bkgrnd = [CCSprite spriteWithSpriteFrameName:@"Menu_background.png"];
-    }
-    _main_bkgrnd.position = ccp(winSize.width/2, winSize.height/2);
-    [_batchNode addChild:_main_bkgrnd z:5];
 
-    if (curLevel.isGameOver && _curStoryIndex == curLevel.storyStrings.count - 1) {
+    // Show actual story image, it will on top of menu_background
+    if (curLevel.storyImages.count > _curStoryIndex) {
+        CGSize winSize = [CCDirector sharedDirector].winSize;
+        self.story_image = [CCSprite spriteWithSpriteFrameName:[curLevel.storyImages objectAtIndex:_curStoryIndex]];
+        _story_image.position = ccp(winSize.width/2, winSize.height/2);
+        [_batchNode addChild:self.story_image z:5];
+    }
+
+    // Show 'continue' or 'new game' if gameOver set
+    if (curLevel.isGameOver) {
         _spriteNewGame.visible = YES;
         _tapToCont.visible = NO;
     } else {
@@ -119,7 +131,7 @@
 - (BOOL)ccTouchBegan:(UITouch *)touch withEvent:(UIEvent *)event {
     _curStoryIndex++;
     StoryLevel *curLevel = (StoryLevel *)[GameState sharedState].curLevel;
-    if (_curStoryIndex < curLevel.storyStrings.count || _curStoryIndex < curLevel.backgroundNames.count) {
+    if (_curStoryIndex < curLevel.storyStrings.count || _curStoryIndex < curLevel.storyImages.count) {
         [self displayCurStoryString];
     } else {
         [[CCTouchDispatcher sharedDispatcher] removeDelegate:self];
