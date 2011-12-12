@@ -125,6 +125,7 @@
 
 // Show ending story level
 - (void)launchHappyEnding {
+    // 
     [[(StoryLevel*)[GameState sharedState].happyEnding storyStrings] removeAllObjects];
     [[(StoryLevel*)[GameState sharedState].happyEnding storyStrings] addObject:[NSString stringWithFormat:@"Pipipiip PIPIIIP!!!\n piiIIP.\nScore: %d", [GameState sharedState].score]];
     
